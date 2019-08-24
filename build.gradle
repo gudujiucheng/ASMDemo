@@ -5,10 +5,16 @@ buildscript {
     repositories {
         google()
         jcenter()
+        //本地调试仓库
+        maven {
+            url uri('repo')
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0'
-        
+
+        //引用插件
+        classpath 'com.canzhang.android:canzhang_plugin:1.0.0-SNAPSHOT'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files

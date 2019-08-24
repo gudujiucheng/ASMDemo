@@ -4,12 +4,14 @@ dependencies {
     compile gradleApi()
     compile localGroovy()
 
+    //引入asm库
     compile 'org.ow2.asm:asm:6.0'
     compile 'org.ow2.asm:asm-commons:6.0'
     compile 'org.ow2.asm:asm-analysis:6.0'
     compile 'org.ow2.asm:asm-util:6.0'
     compile 'org.ow2.asm:asm-tree:6.0'
     compileOnly 'com.android.tools.build:gradle:3.2.1', {//这里注意需要保持版本一致，否则会报错
+        //排除gradle自带的asm库
         exclude group:'org.ow2.asm'
     }
 }
@@ -27,7 +29,7 @@ uploadArchives {
         pom.groupId = 'com.canzhang.android'
 
         //artifactId
-        pom.artifactId = 'bury-point-com.canzhang.plugin'
+        pom.artifactId = 'canzhang_plugin'
 
         //插件版本号
         pom.version = '1.0.0-SNAPSHOT'

@@ -1,6 +1,7 @@
 package com.canzhang.asmdemo.sdk;
 
 import android.support.annotation.Keep;
+import android.util.Log;
 import android.view.View;
 
 public class MySdk {
@@ -11,6 +12,6 @@ public class MySdk {
      */
     @Keep
     public static void onViewClick(View view) {
-
+        Log.e("Test","成功插入 666666："+view);
     }
 }

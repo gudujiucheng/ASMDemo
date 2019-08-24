@@ -29,27 +29,30 @@ class AnalyticsClassVisitor extends ClassVisitor implements Opcodes {
 
     /**
      * 这里可以拿到关于.class的所有信息，比如当前类所实现的接口类表等
-     * @param version
-     * @param access
-     * @param name
-     * @param signature
-     * @param superName
-     * @param interfaces
+     * @param version 表示jdk的版本
+     * @param access 当前类的修饰符 （这个和ASM 和 java有些差异，比如public 在这里就是ACC_PUBLIC）
+     * @param name 当前类名
+     * @param signature 泛型信息
+     * @param superName 当前类的父类
+     * @param interfaces 当前类实现的接口列表
      */
     @Override
     void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         super.visit(version, access, name, signature, superName, interfaces)
         mInterfaces = interfaces
         mCurrentClassName = name
+
+        AnalyticsUtils.logD("当前的类是：" + name)
+        AnalyticsUtils.logD("当前类实现的接口有：" + mInterfaces)
     }
 
     /**
      * 这里可以拿到关于method的所有信息，比如方法名，方法的参数描述等
-     * @param access
-     * @param name
-     * @param desc
-     * @param signature
-     * @param exceptions
+     * @param access 方法的修饰符
+     * @param name 方法名
+     * @param desc 方法签名（就是（参数列表）返回值类型拼接）
+     * @param signature 泛型相关信息
+     * @param exceptions 方法抛出的异常信息
      * @return
      */
     @Override
@@ -58,7 +61,7 @@ class AnalyticsClassVisitor extends ClassVisitor implements Opcodes {
 
         String nameDesc = name + desc
 
-        methodVisitor = new com.canzhang.plugin.AnalyticsDefaultMethodVisitor(methodVisitor, access, name, desc) {
+        methodVisitor = new AnalyticsDefaultMethodVisitor(methodVisitor, access, name, desc) {
 
             @Override
             void visitEnd() {
@@ -80,10 +83,14 @@ class AnalyticsClassVisitor extends ClassVisitor implements Opcodes {
                 super.onMethodEnter()
 
                 if ((mInterfaces != null && mInterfaces.length > 0)) {
+                    //如果当前类实现的接口有View$OnClickListener，并且当前进入的方法是onClick(Landroid/view/View;)V
+                    //这里如果不知道怎么写，可以写个demo打印一下，就很快知道了，这里涉及一些ASM和Java中不同的写法。
                     if ((mInterfaces.contains('android/view/View$OnClickListener') && nameDesc == 'onClick(Landroid/view/View;)V')) {
                         AnalyticsUtils.logD("插桩：OnClickListener nameDesc:" + nameDesc + " currentClassName:" + mCurrentClassName)
+
+                        //这里就是插代码逻辑了
                         methodVisitor.visitVarInsn(ALOAD, 1)
-                        methodVisitor.visitMethodInsn(INVOKESTATIC, AnalyticsSetting.GENERATE_SDK_API_CLASS_PATH, "trackViewOnClick", "(Landroid/view/View;)V", false)
+                        methodVisitor.visitMethodInsn(INVOKESTATIC, "com/canzhang/asmdemo/sdk/MySdk", "onViewClick", "(Landroid/view/View;)V", false)
                     }
                 }
             }

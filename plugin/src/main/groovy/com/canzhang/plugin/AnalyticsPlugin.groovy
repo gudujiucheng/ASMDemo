@@ -6,7 +6,7 @@ import org.gradle.api.Project
 
 /**
  * 可以通过配置主工程目录中的gradle.properties 中的
- * fqlAnalytics.disablePlugin字段来控制是否开启此插件
+ * canPlugin.disablePlugin字段来控制是否开启此插件
  */
 class AnalyticsPlugin implements Plugin<Project> {
     void apply(Project project) {
@@ -19,7 +19,7 @@ class AnalyticsPlugin implements Plugin<Project> {
         Properties properties = new Properties()
         if (project.rootProject.file('gradle.properties').exists()) {
             properties.load(project.rootProject.file('gradle.properties').newDataInputStream())
-            disableAnalyticsPlugin = Boolean.parseBoolean(properties.getProperty(AnalyticsUtils.PLUGIN_SWITCH_NAME, "false"))
+            disableAnalyticsPlugin = Boolean.parseBoolean(properties.getProperty("disablePlugin", "false"))
         }
 
         if (!disableAnalyticsPlugin) {

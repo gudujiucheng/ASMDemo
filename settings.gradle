@@ -1,1 +1,1 @@
-include ':app', ':com.canzhang.plugin'
+include ':app', ':plugin'
