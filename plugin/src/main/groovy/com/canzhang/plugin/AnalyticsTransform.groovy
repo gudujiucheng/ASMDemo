@@ -32,7 +32,7 @@ class AnalyticsTransform extends Transform {
 
     /**
      * 需要处理的数据类型，有两种枚举类型
-     * CLASSES 代表处理的 java 的 class 文件，RESOURCES 代表要处理 java 的资源
+     * CLASSES 代表处理的 java 的 class 文件（含jar中的文件），RESOURCES 代表要处理 java 的资源
      * @return
      */
     @Override
@@ -64,7 +64,7 @@ class AnalyticsTransform extends Transform {
     }
 
     @Override
-    boolean isIncremental() {//是否增量构建
+    boolean isIncremental() {//是否增量构建（增量构建需要自己在transform方法里面根据增量文件的状态进行判断处理，增量编译能有效提升编译速度）
         return false
     }
 
@@ -77,7 +77,7 @@ class AnalyticsTransform extends Transform {
 
     void _transform(Context context, Collection<TransformInput> inputs, TransformOutputProvider outputProvider, boolean isIncremental) throws IOException, TransformException, InterruptedException {
         printMsg()
-        if (!incremental) {
+        if (!incremental) {//如果是非增量编译，则清空已经输出的内容
             outputProvider.deleteAll()
         }
 
