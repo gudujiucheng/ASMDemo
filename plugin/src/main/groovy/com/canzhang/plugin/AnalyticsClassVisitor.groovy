@@ -86,12 +86,20 @@ class AnalyticsClassVisitor extends ClassVisitor implements Opcodes {
                     //如果当前类实现的接口有View$OnClickListener，并且当前进入的方法是onClick(Landroid/view/View;)V
                     //这里如果不知道怎么写，可以写个demo打印一下，就很快知道了，这里涉及一些ASM和Java中不同的写法。
                     if ((mInterfaces.contains('android/view/View$OnClickListener') && nameDesc == 'onClick(Landroid/view/View;)V')) {
-                        AnalyticsUtils.logD("插桩：OnClickListener nameDesc:" + nameDesc + " currentClassName:" + mCurrentClassName)
+                        AnalyticsUtils.logD("命中插桩------>>>>：OnClickListener nameDesc:" + nameDesc + " currentClassName:" + mCurrentClassName)
 
                         //这里就是插代码逻辑了
-                        methodVisitor.visitVarInsn(ALOAD, 1)
+                        methodVisitor.visitVarInsn(ALOAD, 1)//从局部变量表的相应位置装载一个对象引用到操作数栈的栈顶
                         methodVisitor.visitMethodInsn(INVOKESTATIC, "com/canzhang/asmdemo/sdk/MySdk", "onViewClick", "(Landroid/view/View;)V", false)
                     }
+
+                    /**
+                     *  匿名内部类可以使你的代码更加简洁，你可以在定义一个类的同时对其进行实例化。
+                     *  它与局部类很相似，不同的是它没有类名，如果某个局部类你只需要用一次，那么你就可以使用匿名内部类
+                     *
+                     *  new View.OnClickListener() {onClick(View view)}  就是匿名内部类，实现了View.OnClickListener接口
+                     */
+
                 }
             }
 

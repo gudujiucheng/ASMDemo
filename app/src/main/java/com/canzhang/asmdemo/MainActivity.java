@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.canzhang.asmdemo.sdk.MySdk;
+
 import asm.canzhang.com.asmdemo.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -16,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.tv_test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MySdk.onViewClick(view);
                 Toast.makeText(MainActivity.this, "普通点击事件", Toast.LENGTH_SHORT).show();
             }
         });
