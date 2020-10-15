@@ -27,7 +27,7 @@ class AnalyticsTransform extends Transform {
      */
     @Override
     String getName() {
-        return AnalyticsSetting.PLUGIN_NAME
+        return "can_plugin"
     }
 
     /**

@@ -12,17 +12,17 @@ class AnalyticsPlugin implements Plugin<Project> {
     void apply(Project project) {
 
         //这个AnalyticsExtension 以及canPlugin名称，可以提供我们在外层配置一些参数，从而支持外层扩展
-        AnalyticsExtension extension = project.extensions.create("canPlugin", AnalyticsExtension)
+        AnalyticsExtension extension = project.extensions.create("myTestPluginParam", AnalyticsExtension)
 
         //这个可以读取工程的gradle.properties 里面的can.disablePlugin 字段，控住是否注册此插件
-        boolean disableAnalyticsPlugin = false
+        boolean usePlugin = false
         Properties properties = new Properties()
         if (project.rootProject.file('gradle.properties').exists()) {
             properties.load(project.rootProject.file('gradle.properties').newDataInputStream())
-            disableAnalyticsPlugin = Boolean.parseBoolean(properties.getProperty("disablePlugin", "false"))
+            usePlugin = Boolean.parseBoolean(properties.getProperty("usePlugin", "false"))
         }
 
-        if (!disableAnalyticsPlugin) {
+        if (usePlugin) {
             println("------------您开启了全埋点插桩插件--------------")
             AppExtension appExtension = project.extensions.findByType(AppExtension.class)
             //注册我们的transform类

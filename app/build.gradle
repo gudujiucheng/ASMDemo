@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.canzhang.plugin'
+myTestPluginParam {
+    isShowDebugInfo = true;//展示调试信息
+}
 
 android {
     compileSdkVersion 29
