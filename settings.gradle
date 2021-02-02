@@ -1,1 +1,2 @@
+include ':try_catch_plugin'
 include ':app', ':plugin'
