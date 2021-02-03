@@ -24,8 +24,6 @@ public class TryCatchTransform extends HunterTransform {
     public TryCatchTransform(Project project) {
         super(project);
         this.project = project;
-        //可以依据这个名字（tryCatchExtension），在依赖module中创建一些配置参数
-        project.getExtensions().create("tryCatchExtension", TryCatchExtension.class);
         this.bytecodeWeaver = new TryCatchWeaver();
     }
 

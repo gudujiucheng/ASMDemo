@@ -5,7 +5,7 @@ myTestPluginParam {
 }
 apply plugin: 'com.canzhang.try_catch_plugin'
 tryCatchExtension{//注意用.拼接，并是class结尾
-    methodMap = ['com.canzhang.asmdemo.MainActivity.class':['div']]
+    methodMap = ["com.canzhang.asmdemo.MainActivity.class":["div"]]
 }
 
 android {
