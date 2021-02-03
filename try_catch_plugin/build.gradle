@@ -3,15 +3,17 @@ apply plugin: 'maven'
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
-
-    implementation 'org.ow2.asm:asm:7.1'
-    implementation 'org.ow2.asm:asm-commons:7.1'
-    implementation 'org.ow2.asm:asm-analysis:7.1'
-    implementation 'org.ow2.asm:asm-util:7.1'
-    implementation 'org.ow2.asm:asm-tree:7.1'
-    compileOnly 'com.android.tools.build:gradle:3.2.1', {//这里注意需要保持版本一致，否则会报错
-        exclude group:'org.ow2.asm'
-    }
+    implementation 'com.android.tools.build:gradle:3.2.1'
+    implementation 'com.android.tools.build:gradle-api:3.2.1'
+    implementation 'commons-io:commons-io:2.6'
+    implementation 'commons-codec:commons-codec:1.10'
+    //noinspection GradleDependency
+    implementation 'org.ow2.asm:asm:6.0'
+    //noinspection GradleDependency
+    implementation 'org.ow2.asm:asm-util:6.0'
+    //noinspection GradleDependency
+    implementation 'org.ow2.asm:asm-commons:6.0'
+    implementation 'com.quinn.hunter:hunter-transform:1.0.0'
 }
 repositories {
     jcenter()

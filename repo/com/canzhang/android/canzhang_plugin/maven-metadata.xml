@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.canzhang.android</groupId>
+  <artifactId>canzhang_plugin</artifactId>
+  <versioning>
+    <versions>
+      <version>1.0.0-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20201015035017</lastUpdated>
+  </versioning>
+</metadata>

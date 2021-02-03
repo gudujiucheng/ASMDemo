@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.canzhang.android</groupId>
+  <artifactId>try_catch_plugin</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20210203.094022</timestamp>
+      <buildNumber>27</buildNumber>
+    </snapshot>
+    <lastUpdated>20210203094022</lastUpdated>
+  </versioning>
+</metadata>

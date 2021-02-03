@@ -14,7 +14,7 @@ public class TryCatchPlugin implements Plugin<Project> {
         AppExtension appExtension = project.getExtensions().findByType(AppExtension.class);
         if(appExtension!=null){
             System.out.println("-------------注册try catch 插件--------------");
-            appExtension.registerTransform(new TryCatchTransform(), Collections.EMPTY_LIST);
+            appExtension.registerTransform(new TryCatchTransform(project), Collections.EMPTY_LIST);
         }else{
             System.out.println("TryCatchPlugin 异常~~~~~~~~~~~~~~~");
         }

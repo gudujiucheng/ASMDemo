@@ -1,9 +1,13 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'com.canzhang.plugin'
-//myTestPluginParam {
-//    isShowDebugInfo = true;//展示调试信息
-//}
+apply plugin: 'com.canzhang.plugin'
+myTestPluginParam {
+    isShowDebugInfo = true;//展示调试信息
+}
 apply plugin: 'com.canzhang.try_catch_plugin'
+tryCatchExtension{//注意用.拼接，并是class结尾
+    methodMap = ['com.canzhang.asmdemo.MainActivity.class':['div']]
+}
+
 android {
     compileSdkVersion 29
     defaultConfig {
