@@ -40,13 +40,14 @@ public final class TryCatchClassAdapter extends ClassVisitor {
         System.out.println("命中方法:"+name);
         return new AdviceAdapter(ASM6, mv, access, name, desc) {
 
-            private Label from = new Label(),
-                    to = new Label(),
-                    target = new Label();
+            //这个label是用于定位位置的，参见label类的描述。
+            private Label from = new Label(),//异常作用域开头
+                    to = new Label(),//异常作用域结尾
+                    target = new Label();//异常捕获后的代码开头
             @Override
             protected void onMethodEnter() {
-                //标志：try块开始位置
-                visitLabel(from);
+
+                visitLabel(from);//标志：try块开始位置
                 visitTryCatchBlock(from,
                         to,
                         target,
@@ -60,11 +61,10 @@ public final class TryCatchClassAdapter extends ClassVisitor {
 
             @Override
             public void visitMaxs(int maxStack, int maxLocals) {
-                //标志：try块结束
-                mv.visitLabel(to);
+                mv.visitLabel(to); //标志：try块结束
+                mv.visitLabel(target); //标志：catch块开始位置
 
-                //标志：catch块开始位置
-                mv.visitLabel(target);
+                //Opcodes.F_SAME1 表示一个压缩帧，其局部变量和上一帧完全相同，且在堆栈上只有一个值
                 mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[]{"java/lang/Exception"});
 
                 // 异常信息保存到局部变量
@@ -75,6 +75,14 @@ public final class TryCatchClassAdapter extends ClassVisitor {
                 mv.visitVarInsn(ALOAD, local);
                 mv.visitInsn(ATHROW);
                 super.visitMaxs(maxStack, maxLocals);
+
+
+                /**
+                 * TODO 这里如果不想返回异常，还可以根据方法的返回值，进行默认返回值返回，比如下面这个实力，是返回0，如何自动判断，还需要研究一下，应该可以根据方法签名进行判断，对象就返回null，其他的就默认返回就好。
+                 */
+
+//                mv.visitInsn(FCONST_1);
+//                mv.visitInsn(FRETURN);
             }
         };
 //        return mv == null ? null : new TryCatchMethodAdapter(className + File.separator + name, access, desc, mv);
