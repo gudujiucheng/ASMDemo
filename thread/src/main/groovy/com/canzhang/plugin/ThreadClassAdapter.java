@@ -21,7 +21,7 @@ public final class ThreadClassAdapter extends ClassVisitor {
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         this.className = name;
-        if (!className.contains("com/canzhang/asmdemo/thread/sdk")) {
+        if (!filterSdk()) {
             if (S_Thread.equals(superName)) {
                 System.out.println("命中 superName: " + superName + " className:" + name);
                 changingSuper = true;
@@ -34,18 +34,29 @@ public final class ThreadClassAdapter extends ClassVisitor {
         super.visit(version, access, name, signature, superName, interfaces);
     }
 
+    /**
+     * 过滤替换类主路径的类，防止被插桩
+     * @return
+     */
+    private boolean filterSdk() {
+        return className.contains("com/canzhang/asmdemo/thread/sdk");
+    }
+
     @Override
     public MethodVisitor visitMethod(final int access, final String name,
                                      final String desc, final String signature, final String[] exceptions) {
 //        System.out.println("访问方法---方法修饰符 :" + access + " 方法名:" + name + " 方法签名:" + desc + " 泛型信息:" + signature);
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
+        if (filterSdk()) {
+            return mv;
+        }
         if (changingSuper) {//替换了集成类之后，还需要修改对应的构造函数
             mv = new AdviceAdapter(ASM6, mv, access, name, desc) {
 
                 @Override
                 public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
                     if (name.equalsIgnoreCase("<init>")) {
-                        switch (owner) {//当前的这个方法属于哪一个类的
+                        switch (owner) {//这里要调整够赞函数所调用的方法为新基类的方法，不然调用的还是Thread的构造函数，而不是BaseThread的构造函数。
                             case S_Thread:
                                 System.out.println("changingSuper className: " + className + " owner：" + owner + " name：" + name + " opcode：" + opcode);
                                 mv.visitMethodInsn(opcode, S_TBaseThread, name, descriptor, false);
@@ -61,7 +72,7 @@ public final class ThreadClassAdapter extends ClassVisitor {
             mv = new AdviceAdapter(ASM6, mv, access, name, desc) {
                 @Override
                 public void visitTypeInsn(int opcode, String type) {
-                    //修改直接new 的 Thread
+                    //修改直接new 的 Thread，改为直接new我们的构造类
                     if (opcode == Opcodes.NEW) {
                         switch (type) {
                             case S_Thread:
@@ -75,6 +86,8 @@ public final class ThreadClassAdapter extends ClassVisitor {
 
                 @Override
                 public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
+                    //这里要调整够赞函数所调用的方法为新基类的方法，不然调用的还是Thread的构造函数，而不是BaseThread的构造函数。
+                    //这里就是改了一下ower
                     if (owner.equals(S_Thread) && name.equalsIgnoreCase("<init>")) {
                         mv.visitMethodInsn(opcode, S_TBaseThread, name, descriptor, false);
                         return;
