@@ -8,6 +8,8 @@ tryCatchExtension{//注意用.拼接，并是class结尾
     methodMap = ["com.canzhang.asmdemo.MainActivity.class":["div"]]
 }
 
+apply plugin: 'com.canzhang.thread_plugin'
+
 android {
     compileSdkVersion 29
     defaultConfig {
