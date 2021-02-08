@@ -5,14 +5,24 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.AdviceAdapter;
 
+import static com.canzhang.plugin.ClassConstant.S_Executors;
+import static com.canzhang.plugin.ClassConstant.S_HandlerThread;
+import static com.canzhang.plugin.ClassConstant.S_ProxyExecutors;
+import static com.canzhang.plugin.ClassConstant.S_ScheduledThreadPoolExecutor;
+import static com.canzhang.plugin.ClassConstant.S_TBaseHandlerThread;
+import static com.canzhang.plugin.ClassConstant.S_TBaseScheduledThreadPoolExecutor;
 import static com.canzhang.plugin.ClassConstant.S_TBaseThread;
+import static com.canzhang.plugin.ClassConstant.S_TBaseThreadPoolExecutor;
+import static com.canzhang.plugin.ClassConstant.S_TBaseTimer;
 import static com.canzhang.plugin.ClassConstant.S_Thread;
+import static com.canzhang.plugin.ClassConstant.S_ThreadPoolExecutor;
+import static com.canzhang.plugin.ClassConstant.S_Timer;
 import static org.objectweb.asm.Opcodes.ASM6;
 
 public final class ThreadClassAdapter extends ClassVisitor {
 
     private String className;
-    private boolean changingSuper = false; // 是否处于改继承状态
+
 
     ThreadClassAdapter(final ClassVisitor cv) {
         super(Opcodes.ASM5, cv);
@@ -21,25 +31,39 @@ public final class ThreadClassAdapter extends ClassVisitor {
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         this.className = name;
+        String tempSuperName = null;
         if (!isSdkPath()) {
-            if (S_Thread.equals(superName)) {
-                System.out.println("命中 superName: " + superName + " className:" + name);
-                changingSuper = true;
-                //这里直接改输入的这个superName，就可以把继承替换掉了，比较方便
-                super.visit(version, access, name, signature, S_TBaseThread, interfaces);
-                return;
+            switch (superName) {//如果命中我们特定的类，则替换为我们的类
+                case S_Thread:
+                    tempSuperName = S_TBaseThread;
+                    break;
+                case S_ThreadPoolExecutor:
+                    tempSuperName = S_TBaseThreadPoolExecutor;
+                    break;
+                case S_ScheduledThreadPoolExecutor:
+                    tempSuperName = S_TBaseScheduledThreadPoolExecutor;
+                    break;
+                case S_Timer:
+                    tempSuperName = S_TBaseTimer;
+                    break;
+                case S_HandlerThread:
+                    tempSuperName = S_TBaseHandlerThread;
+                    break;
             }
         }
-//        System.out.println("未命中 superName: " + superName + " className:" + name);
-        super.visit(version, access, name, signature, superName, interfaces);
+        if (tempSuperName != null) {
+            LogUtils.log("命中父类，修改父类：\nclassName:" + className + "\nsuperName:" + superName + "\n更换父类为:" + tempSuperName);
+        }
+        super.visit(version, access, name, signature, tempSuperName == null ? superName : tempSuperName, interfaces);
     }
 
     /**
      * 过滤替换类主路径的类，防止被插桩
+     *
      * @return
      */
     private boolean isSdkPath() {
-        return className.contains("com/canzhang/asmdemo/thread/sdk");
+        return className.contains("com/canzhang/thread_lib");
     }
 
     @Override
@@ -50,52 +74,100 @@ public final class ThreadClassAdapter extends ClassVisitor {
         if (isSdkPath()) {
             return mv;
         }
-        if (changingSuper) {//替换了集成类之后，还需要修改对应的构造函数
-            mv = new AdviceAdapter(ASM6, mv, access, name, desc) {
+        mv = new AdviceAdapter(ASM6, mv, access, name, desc) {
 
-                @Override
-                public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-                    if (name.equalsIgnoreCase("<init>")) {
-                        switch (owner) {//这里要调整够赞函数所调用的方法为新基类的方法，不然调用的还是Thread的构造函数，而不是BaseThread的构造函数。
-                            case S_Thread:
-                                System.out.println("changingSuper className: " + className + " owner：" + owner + " name：" + name + " opcode：" + opcode);
-                                mv.visitMethodInsn(opcode, S_TBaseThread, name, descriptor, false);
-                                return;
-                        }
+            @Override
+            public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
+                String tempOwner = null;
+                if (name.equalsIgnoreCase("<init>")) {//替换了集成类之后，还需要修改对应的构造函数
+                    switch (owner) {//这里要调整够赞函数所调用的方法为新基类的方法，不然调用的还是Thread的构造函数，而不是BaseThread的构造函数。
+                        case S_Thread:
+                            tempOwner = S_TBaseThread;
+                            break;
+                        case S_ThreadPoolExecutor:
+                            tempOwner = S_TBaseThreadPoolExecutor;
+                            break;
+                        case S_ScheduledThreadPoolExecutor:
+                            tempOwner = S_TBaseScheduledThreadPoolExecutor;
+                            break;
+                        case S_Timer:
+                            tempOwner = S_TBaseTimer;
+                            break;
+                        case S_HandlerThread:
+                            tempOwner = S_TBaseHandlerThread;
+                            break;
                     }
-                    super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+                } else if (opcode == Opcodes.INVOKESTATIC && owner.equals(S_Executors)) {//替换线程池实现
+                    if ((name.equals("newFixedThreadPool") && descriptor.equalsIgnoreCase("(I)Ljava/util/concurrent/ExecutorService;"))
+
+                            || (name.equals("newWorkStealingPool") && descriptor.equalsIgnoreCase("(I)Ljava/util/concurrent/ExecutorService;"))
+
+                            || (name.equals("newWorkStealingPool") && descriptor.equalsIgnoreCase("()Ljava/util/concurrent/ExecutorService;"))
+
+                            || (name.equals("newFixedThreadPool") && descriptor.equalsIgnoreCase("(ILjava/util/concurrent/ThreadFactory;)Ljava/util/concurrent/ExecutorService;"))
+
+                            || (name.equals("newSingleThreadExecutor") && descriptor.equalsIgnoreCase("()Ljava/util/concurrent/ExecutorService;"))
+
+                            || (name.equals("newSingleThreadExecutor") && descriptor.equalsIgnoreCase("(Ljava/util/concurrent/ThreadFactory;)Ljava/util/concurrent/ExecutorService;"))
+
+                            || (name.equals("newCachedThreadPool") && descriptor.equalsIgnoreCase("()Ljava/util/concurrent/ExecutorService;"))
+
+                            || (name.equals("newCachedThreadPool") && descriptor.equalsIgnoreCase("(Ljava/util/concurrent/ThreadFactory;)Ljava/util/concurrent/ExecutorService;"))
+
+                            || (name.equals("newSingleThreadScheduledExecutor") && descriptor.equalsIgnoreCase("()Ljava/util/concurrent/ScheduledExecutorService;"))
+
+                            || (name.equals("newSingleThreadScheduledExecutor") && descriptor.equalsIgnoreCase("(Ljava/util/concurrent/ThreadFactory;)Ljava/util/concurrent/ScheduledExecutorService;"))
+
+                            || (name.equals("newScheduledThreadPool") && descriptor.equalsIgnoreCase("(I)Ljava/util/concurrent/ScheduledExecutorService;"))
+
+                            || (name.equals("newScheduledThreadPool") && descriptor.equalsIgnoreCase("(ILjava/util/concurrent/ThreadFactory;)Ljava/util/concurrent/ScheduledExecutorService;"))
+
+                            || (name.equals("unconfigurableExecutorService") && descriptor.equalsIgnoreCase("(Ljava/util/concurrent/ExecutorService;)Ljava/util/concurrent/ExecutorService;"))
+
+                            || (name.equals("unconfigurableScheduledExecutorService") && descriptor.equalsIgnoreCase("(Ljava/util/concurrent/ScheduledExecutorService;)Ljava/util/concurrent/ScheduledExecutorService;"))
+
+                    ) {
+                        tempOwner = S_ProxyExecutors;
+                    }
+                }
+                if (tempOwner != null) {
+                    LogUtils.log("调整为调用新父类的构造函数: \nclassName:" + className + "\n原归属类:" + owner + "\n新归属类:" + tempOwner);
                 }
 
+                super.visitMethodInsn(opcode, tempOwner == null ? owner : tempOwner, name, descriptor, isInterface);
+            }
 
-            };
-        } else {
-            mv = new AdviceAdapter(ASM6, mv, access, name, desc) {
-                @Override
-                public void visitTypeInsn(int opcode, String type) {
-                    //修改直接new 的 Thread，改为直接new我们的构造类
-                    if (opcode == Opcodes.NEW) {
-                        switch (type) {
-                            case S_Thread:
-                                mv.visitTypeInsn(Opcodes.NEW, S_TBaseThread);
-                                return;
-                        }
 
+            @Override
+            public void visitTypeInsn(int opcode, String type) {
+                //修改直接new的线程相关对象，改为直接new我们的构造类
+                String tempNewType = null;
+                if (opcode == Opcodes.NEW) {
+                    switch (type) {
+                        case S_Thread:
+                            tempNewType = S_TBaseThread;
+                            mv.visitTypeInsn(Opcodes.NEW, S_TBaseThread);
+                            break;
+                        case S_ThreadPoolExecutor:
+                            tempNewType = S_TBaseThreadPoolExecutor;
+                            break;
+                        case S_ScheduledThreadPoolExecutor:
+                            tempNewType = S_TBaseScheduledThreadPoolExecutor;
+                            break;
+                        case S_Timer:
+                            tempNewType = S_TBaseTimer;
+                            break;
+                        case S_HandlerThread:
+                            tempNewType = S_TBaseHandlerThread;
+                            break;
                     }
-                    super.visitTypeInsn(opcode, type);
                 }
-
-                @Override
-                public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-                    //这里要调整够赞函数所调用的方法为新基类的方法，不然调用的还是Thread的构造函数，而不是BaseThread的构造函数。
-                    //这里就是改了一下ower
-                    if (owner.equals(S_Thread) && name.equalsIgnoreCase("<init>")) {
-                        mv.visitMethodInsn(opcode, S_TBaseThread, name, descriptor, false);
-                        return;
-                    }
-                    super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+                if (tempNewType != null) {
+                    LogUtils.log("命中new 对象事件：\nclassName：" + className + "\n原类型：" + type + "\n更换为：" + tempNewType);
                 }
-            };
-        }
+                super.visitTypeInsn(opcode, tempNewType == null ? type : tempNewType);
+            }
+        };
         return mv;
 
     }
