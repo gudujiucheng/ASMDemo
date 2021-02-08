@@ -1,0 +1,32 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.canzhang.thread_lib">
+    <application android:allowBackup="true">
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="com.canzhang.thread_lib.ThreadTrackerInitializer"
+                android:value="androidx.startup" />
+        </provider>
+        <activity
+            android:name=".ui.TrackerActivity"
+            android:icon="@mipmap/threadtracker_launcher"
+            android:roundIcon="@mipmap/threadtracker_launcher_round"
+            android:label="ThreadTracker"
+            android:theme="@style/ThreadTrackerAppTheme"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.canzhang.threadtracker.task">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.ThreadDetailsActivity"
+            android:taskAffinity="com.canzhang.threadtracker.task" />
+
+    </application>
+</manifest>

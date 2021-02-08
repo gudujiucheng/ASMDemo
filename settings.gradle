@@ -1,3 +1,4 @@
-include ':thread'
+include ':thread_lib'
+include ':thread_plugin'
 include ':try_catch_plugin'
 include ':app', ':plugin'

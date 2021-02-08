@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void testThread() {
         new Thread().start();
-        new MyThread().start();
+        new MyThread("str").start();
     }
 
     //测试异常捕获
