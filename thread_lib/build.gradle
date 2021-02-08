@@ -37,3 +37,20 @@ dependencies {
     implementation 'androidx.startup:startup-runtime:1.0.0'
 
 }
+
+//调试模式下在本地生成仓库（也可推入自己已有的maven仓库）
+uploadArchives {
+    repositories.mavenDeployer {
+        //本地仓库路径，以放到项目根目录下的 repo 的文件夹为例
+        repository(url: uri('../repo'))
+
+        //groupId ，自行定义
+        pom.groupId = 'com.canzhang.android'
+
+        //artifactId
+        pom.artifactId = 'thread_lib'
+
+        //插件版本号
+        pom.version = '1.0.0-SNAPSHOT'
+    }
+}

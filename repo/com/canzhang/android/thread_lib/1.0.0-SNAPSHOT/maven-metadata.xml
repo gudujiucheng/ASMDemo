@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.canzhang.android</groupId>
+  <artifactId>thread_lib</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20210208.100709</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20210208100709</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>aar</extension>
+        <value>1.0.0-20210208.100709-1</value>
+        <updated>20210208100709</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.0.0-20210208.100709-1</value>
+        <updated>20210208100709</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
