@@ -35,6 +35,8 @@ allprojects {
     repositories {
         google()
         jcenter()
+        //如果想直接使用githup上面的，可以这么配置远端仓库
+        maven { url "https://raw.githubusercontent.com/gudujiucheng/ASMDemo/master/repo" }
     }
 }
 

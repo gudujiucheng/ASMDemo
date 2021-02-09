@@ -25,14 +25,15 @@ public final class ThreadClassAdapter extends ClassVisitor {
 
 
     ThreadClassAdapter(final ClassVisitor cv) {
-        super(Opcodes.ASM5, cv);
+        //注意这里的版本号要留意，不同版本可能会抛出异常，仔细观察异常
+        super(ASM6, cv);
     }
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
         this.className = name;
         String tempSuperName = null;
-        if (!isSdkPath()) {
+        if (!isSdkPath()&&superName!=null) {
             switch (superName) {//如果命中我们特定的类，则替换为我们的类
                 case S_Thread:
                     tempSuperName = S_TBaseThread;
@@ -53,6 +54,9 @@ public final class ThreadClassAdapter extends ClassVisitor {
         }
         if (tempSuperName != null) {
             LogUtils.log("命中父类，修改父类：\nclassName:" + className + "\nsuperName:" + superName + "\n更换父类为:" + tempSuperName);
+        }
+        if(superName==null){
+            LogUtils.log("\n----------\n----------\n----------\n----------\n\n没有父类这是什么类：\nclassName:" + className +"\n----------\n----------\n----------\n----------\n\n");
         }
         super.visit(version, access, name, signature, tempSuperName == null ? superName : tempSuperName, interfaces);
     }
@@ -146,7 +150,6 @@ public final class ThreadClassAdapter extends ClassVisitor {
                     switch (type) {
                         case S_Thread:
                             tempNewType = S_TBaseThread;
-                            mv.visitTypeInsn(Opcodes.NEW, S_TBaseThread);
                             break;
                         case S_ThreadPoolExecutor:
                             tempNewType = S_TBaseThreadPoolExecutor;
