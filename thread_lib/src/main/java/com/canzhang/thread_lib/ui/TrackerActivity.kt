@@ -1,6 +1,7 @@
 package com.canzhang.thread_lib.ui
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -41,8 +42,8 @@ class TrackerActivity : Activity() {
             override fun onItemClick(view: View) {
                 val position: Int = recyclerView.getChildAdapterPosition(view)
                 ThreadDetailsActivity.startDetailsActivity(
-                    this@TrackerActivity,
-                    (recyclerView.adapter as TrackerAdapter).getItemList()[position]
+                        this@TrackerActivity,
+                        (recyclerView.adapter as TrackerAdapter).getItemList()[position]
                 )
             }
         })
@@ -60,11 +61,14 @@ class TrackerActivity : Activity() {
             refreshProgress.visibility = View.GONE
             // statisticsText.text = "total: ${infoResult.totalNum}      system/unknown: ${infoResult.unknownNum}"
             if (toast) {
-                Toast.makeText(
-                    this,
-                    "总线程数: ${infoResult.totalNum}  其中：system&unknown: ${infoResult.unknownNum}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                AlertDialog.Builder(this)
+                        .setTitle("线程总览")
+                        .setMessage("总线程数: ${infoResult.totalNum}  " +
+                                "\n单独线程总数: ${infoResult.singleThreadNum}" +
+                                "\n线程池总数: ${infoResult.poolNum}" +
+                                "\n线程池线程总数: ${infoResult.poolThreadNum}" +
+                                "\n未知or系统线程总数: ${infoResult.unknownNum}")
+                        .create().show()
             }
         }
     }

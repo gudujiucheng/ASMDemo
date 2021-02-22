@@ -136,6 +136,7 @@ class ThreadInfoManager private constructor() {
             }
         }
 
+
         if (log) print()
 
         // 生成listShowInfo供列表显示
@@ -149,10 +150,17 @@ class ThreadInfoManager private constructor() {
                     threadState = it.value.state
                     type = ShowInfo.SINGLE_THREAD
                 })
+                //记录单独线程的数量（没有线程池归属，切调用栈不为空的）
+                threadInfoResult.singleThreadNum++
             }
         }
+
+
+
         lastThreadPoolInfo.forEach {
             if (it.value.threadIds.isNotEmpty()) { // 忽略没有线程在运行的线程池
+                //记录有线程的线程池
+                threadInfoResult.poolNum++
                 listShowInfo.add(ShowInfo().apply {
                     poolName = it.value.poolName
                     type = ShowInfo.POOL
@@ -165,6 +173,8 @@ class ThreadInfoManager private constructor() {
                             threadState = it.state
                             poolName = it.poolName
                             type = ShowInfo.POOL_THREAD
+                            //记录线程池中的线程总数量
+                            threadInfoResult.poolThreadNum++
                         })
                     }
                 }
@@ -180,6 +190,7 @@ class ThreadInfoManager private constructor() {
                     type = ShowInfo.SINGLE_THREAD
                     desc="未知or系统线程："
                 })
+                //记录没有线程池归属，切没有调用栈的线程数量
                 threadInfoResult.unknownNum++
             }
         }
