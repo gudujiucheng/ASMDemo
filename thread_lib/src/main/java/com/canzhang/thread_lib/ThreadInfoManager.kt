@@ -178,6 +178,7 @@ class ThreadInfoManager private constructor() {
                     threadName = it.value.name
                     threadState = it.value.state
                     type = ShowInfo.SINGLE_THREAD
+                    desc="未知or系统线程："
                 })
                 threadInfoResult.unknownNum++
             }

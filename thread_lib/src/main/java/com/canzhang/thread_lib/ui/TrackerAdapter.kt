@@ -40,14 +40,14 @@ class TrackerAdapter(private var list: List<ShowInfo>, private val listener: OnI
         when (data.type) {
             ShowInfo.SINGLE_THREAD -> {//单独的线程
                 holder.threadLayout.setBackgroundColor(Color.argb(0x00, 0x00, 0xbc, 0x71))
-                holder.threadName.text = data.threadName
+                holder.threadName.text = data.desc?.plus(data.threadName)
                 holder.threadState.text = data.threadState.name
                 holder.threadName.setPadding(0, 0, 0, 0)
                 holder.threadState.visibility = View.VISIBLE
             }
             ShowInfo.POOL -> {
                 holder.threadLayout.setBackgroundColor(Color.argb(0x20, 0x00, 0xbc, 0x71))
-                holder.threadName.text = "线程池："+data.poolName
+                holder.threadName.text =  data.desc?.plus("线程池：").plus(data.poolName)
                 holder.threadState.visibility = View.GONE
                 holder.threadName.setPadding(0, 0, 0, 0)
             }

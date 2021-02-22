@@ -62,7 +62,7 @@ class TrackerActivity : Activity() {
             if (toast) {
                 Toast.makeText(
                     this,
-                    "total: ${infoResult.totalNum}  system/unknown: ${infoResult.unknownNum}",
+                    "总线程数: ${infoResult.totalNum}  其中：system&unknown: ${infoResult.unknownNum}",
                     Toast.LENGTH_SHORT
                 ).show()
             }
