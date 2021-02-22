@@ -44,6 +44,7 @@ open class TBaseHandlerThread : HandlerThread {
 
     override fun run() {
         super.run()
+        //执行完毕后，进行移除
         ThreadInfoManager.INSTANCE.removeThreadInfo(id)
     }
 }

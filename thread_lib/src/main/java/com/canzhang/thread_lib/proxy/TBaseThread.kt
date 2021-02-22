@@ -41,14 +41,14 @@ open class TBaseThread : Thread {
 
         // 有则更新没有则新增
         val info = ThreadInfoManager.INSTANCE.getThreadInfoById(id)
-        info?.also {
+        info?.also {//kotlin释义---also特定作用域+判空
             it.id = id
             it.name = name
             it.state = state
             if (it.callStack.isEmpty()) { // 如果来自线程池，callStack意义为任务添加栈，可能已经有值了，不能更新为start调用栈
                 it.callStack = callStack
                 it.callThreadId = currentThread().id
-            }
+            }//kotlin释义---apply  作用域、判空、省略变量名    这里是复合符号?: info为空则执行 apply内容
         } ?: apply {
             val newInfo = ThreadInfo()
             newInfo.id = id
@@ -57,12 +57,14 @@ open class TBaseThread : Thread {
             newInfo.callThreadId = currentThread().id
             newInfo.state = state
             newInfo.startTime = SystemClock.elapsedRealtime()
+            //存下来正在运行的线程
             ThreadInfoManager.INSTANCE.putThreadInfo(id, newInfo)
         }
     }
 
     override fun run() {
         super.run()
+        //执行完毕后移除
         ThreadInfoManager.INSTANCE.removeThreadInfo(id)
     }
 }

@@ -16,14 +16,18 @@ class ThreadInfoManager private constructor() {
         val INSTANCE: ThreadInfoManager by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) { ThreadInfoManager() }
     }
 
-    // 随时在更新
+    // 随时在更新   所有线程集合，id、ThreadInfo
     private val threadInfo = ConcurrentHashMap<Long, ThreadInfo>()
+    // 线程池信息 ，poolName(类名拼接),ThreadPoolInfo
     private val threadPoolInfo = ConcurrentHashMap<String, ThreadPoolInfo>()
 
     // 用于展示页面获取细节，只在buildAllThreadInfo时更新
     private val lastThreadInfo = HashMap<Long, ThreadInfo>()
     private val lastThreadPoolInfo = HashMap<String, ThreadPoolInfo>()
 
+    /**
+     *存放线程信息，含调用start的
+     */
     fun putThreadInfo(threadId: Long, info: ThreadInfo) {
         threadInfo[threadId] = info
     }
@@ -32,6 +36,7 @@ class ThreadInfoManager private constructor() {
         threadInfo.remove(threadId)
     }
 
+    //表示返回值是ThreadInfo 类型，加个？表示可为空。
     fun getThreadInfoById(threadId: Long): ThreadInfo? {
         return threadInfo[threadId]
     }
@@ -60,10 +65,7 @@ class ThreadInfoManager private constructor() {
     // 获取当前所有线程并和已保存线程信息比较、融合，返回用于展示的结果
     fun buildAllThreadInfo(log: Boolean = false): ThreadInfoResult {
 
-        // 暂时规定必须在TrackerActivity刷新线程中
-        if (Thread.currentThread().name != "ThreadTracker-Refresh") {
-            throw RuntimeException("not in ThreadTracker-Refresh thread")
-        }
+        //忽略当前线程
         val ignoreId = Thread.currentThread().id
 
         val threadInfoResult = ThreadInfoResult()
@@ -71,11 +73,13 @@ class ThreadInfoManager private constructor() {
         // 初始化一些字段
         val values = threadInfo.values.iterator()
         while (values.hasNext()) {
+            //默认未命中状态
             values.next().hit = ThreadInfo.HIT_NO
         }
 
         val poolValues = threadPoolInfo.values.iterator()
         while (poolValues.hasNext()) {
+            //清空线程池中已经记录的线程
             poolValues.next().threadIds.clear()
         }
 
@@ -85,7 +89,7 @@ class ThreadInfoManager private constructor() {
             if (thread.id == ignoreId)
                 continue
             var info = threadInfo[thread.id]
-            // info存在就更新不算在就新建
+            // info存在就更新不在就新建并存储线程的信息，如果线程关联的poolName不为空，则关联线程信息
             info = (info ?: ThreadInfo()).apply {
                 hit = ThreadInfo.HIT_YES // 已被找到，表示此线程信息对应线程当前正在活动
                 id = thread.id
@@ -104,7 +108,7 @@ class ThreadInfoManager private constructor() {
         lastThreadInfo.clear()
         lastThreadPoolInfo.clear()
 
-        // 清除没有被命中的thread，将剩下的复制到lastThreadInfo中
+        // 清除没有被命中的thread（已经不存在的），将剩下的复制到lastThreadInfo中
         val afterValues = threadInfo.values.iterator()
         while (afterValues.hasNext()) {
             val it = afterValues.next()

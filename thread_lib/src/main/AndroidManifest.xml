@@ -11,6 +11,7 @@
                 android:name="com.canzhang.thread_lib.ThreadTrackerInitializer"
                 android:value="androidx.startup" />
         </provider>
+<!--        这里这样定义，也定义为启动的intent-filter，然后在定义一个不同的任务栈taskAffinity，这样就可以在桌面生成另外一个启动图标了-->
         <activity
             android:name=".ui.TrackerActivity"
             android:icon="@mipmap/threadtracker_launcher"

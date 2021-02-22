@@ -65,6 +65,7 @@ object AsyncTaskHook {
 
     private fun proxyT(t: Executor): Executor {
         if (t is ThreadPoolExecutor) {
+            //替换为包装后的factory 方便记录线程的创建
             t.threadFactory = TBaseThreadFactory(t.threadFactory, toObjectString(t))
             // 防止上层强转为ThreadPoolExecutor
             return ProxyThreadPoolExecutor(t)

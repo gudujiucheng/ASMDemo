@@ -16,7 +16,6 @@ open class ProxyThreadPoolExecutor(private val real: ThreadPoolExecutor) :
     ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, LinkedBlockingDeque<Runnable>()) {
 
     private val poolName = toObjectString(real)
-
     init {
         val createStack = getStackString(false)
         val poolInfo = ThreadPoolInfo()

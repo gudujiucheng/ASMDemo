@@ -38,7 +38,7 @@ class TrackerAdapter(private var list: List<ShowInfo>, private val listener: OnI
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val data = list[position]
         when (data.type) {
-            ShowInfo.SINGLE_THREAD -> {
+            ShowInfo.SINGLE_THREAD -> {//单独的线程
                 holder.threadLayout.setBackgroundColor(Color.argb(0x00, 0x00, 0xbc, 0x71))
                 holder.threadName.text = data.threadName
                 holder.threadState.text = data.threadState.name
@@ -47,11 +47,11 @@ class TrackerAdapter(private var list: List<ShowInfo>, private val listener: OnI
             }
             ShowInfo.POOL -> {
                 holder.threadLayout.setBackgroundColor(Color.argb(0x20, 0x00, 0xbc, 0x71))
-                holder.threadName.text = data.poolName
+                holder.threadName.text = "线程池："+data.poolName
                 holder.threadState.visibility = View.GONE
                 holder.threadName.setPadding(0, 0, 0, 0)
             }
-            ShowInfo.POOL_THREAD -> {
+            ShowInfo.POOL_THREAD -> {//线程池中的线程
                 holder.threadLayout.setBackgroundColor(Color.argb(0x00, 0x00, 0xbc, 0x71))
                 holder.threadName.text = data.threadName
                 holder.threadState.text = data.threadState.name

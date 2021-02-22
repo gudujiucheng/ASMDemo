@@ -6,8 +6,10 @@ import com.canzhang.thread_lib.ThreadInfoManager
 import java.util.concurrent.Callable
 
 /**
- * 静态代理线程池中的Runnable、Callable，时机一般是调用添加Runnable、Callable任务的方法时。这样PoolRunnableAndOther就可以获得调用栈与线程池名，并且可以在call或run时与当前线程建立联系
- * 有些类会同时继承Runnable、Callable，比如rxjava2，或同时继承Runnable、Comparable，比如使用PriorityBlockingQueue的线程池。为了避免类型转换失败，这里继承了已知所有接口，如有相关crash，可继续在这里添加接口
+ * 静态代理线程池中的Runnable、Callable，时机一般是调用添加Runnable、Callable任务的方法时。
+ * 这样PoolRunnableAndOther就可以获得调用栈与线程池名，并且可以在call或run时与当前线程建立联系
+ * 有些类会同时继承Runnable、Callable，比如rxjava2，或同时继承Runnable、Comparable，比如使用PriorityBlockingQueue的线程池。
+ * 为了避免类型转换失败，这里继承了已知所有接口，如有相关crash，可继续在这里添加接口
  */
 class PoolRunnableAndOther constructor(
     private val any: Any,
@@ -30,6 +32,9 @@ class PoolRunnableAndOther constructor(
         return v
     }
 
+    /**
+     * 更新线程信息
+     */
     private fun updateThreadInfo(): ThreadInfo {
         val thread = Thread.currentThread()
         var info = ThreadInfoManager.INSTANCE.getThreadInfoById(thread.id)

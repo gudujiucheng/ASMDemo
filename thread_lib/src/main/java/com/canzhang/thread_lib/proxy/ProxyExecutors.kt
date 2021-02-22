@@ -114,7 +114,7 @@ object ProxyExecutors {
 
     private fun proxy(executorService: ExecutorService): ExecutorService {
         if (executorService is ThreadPoolExecutor) {
-            // 这里和TBaseThreadPoolExecutor一样，设置ThreadFactory为了尽早获取线程信息和线程池建立联系，而不用等到run时
+            // 这里和TBaseThreadPoolExecutor一样，替换为包装后的ThreadFactory为了尽早获取线程信息和线程池建立联系，而不用等到run时
             executorService.threadFactory = TBaseThreadFactory(
                 executorService.threadFactory,
                 toObjectString(executorService)

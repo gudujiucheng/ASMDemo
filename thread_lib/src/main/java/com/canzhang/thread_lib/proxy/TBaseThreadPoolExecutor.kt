@@ -183,6 +183,7 @@ open class TBaseThreadPoolExecutor : ThreadPoolExecutor {
     override fun shutdown() {
         weakRunnableList.clear()
         super.shutdown()
+        //清除记录
         ThreadInfoManager.INSTANCE.shutDownPool(poolName)
     }
 
@@ -197,6 +198,7 @@ open class TBaseThreadPoolExecutor : ThreadPoolExecutor {
             }
         }
         weakRunnableList.clear()
+        //清除记录
         ThreadInfoManager.INSTANCE.shutDownPool(poolName)
         return list
     }

@@ -24,6 +24,7 @@ open class TBaseThreadFactory(
             it.state = thread.state
             it.poolName = poolName
         }
+        //存放线程池创建的线程信息，这里注意要携带线程池的名称
         ThreadInfoManager.INSTANCE.putThreadInfo(thread.id, info)
     }
 

@@ -47,7 +47,7 @@ object TrackerUtils {
                 // 前几行是动态代理的栈
                 continue
             }
-            if (stackElement.toString().contains("com.codoon.threadtracker")) {
+            if (stackElement.toString().contains("com.canzhang.thread_lib")) {
                 continue
             }
             str += stackElement.toString() + "\n"
@@ -58,7 +58,7 @@ object TrackerUtils {
     fun getThreadRunningStack(stacks: Array<StackTraceElement>): String {
         var str = ""
         for (stackElement in stacks) {
-            if (stackElement.toString().contains("com.codoon.threadtracker"))
+            if (stackElement.toString().contains("com.canzhang.thread_lib"))
                 continue
             str += stackElement.toString() + "\n"
         }

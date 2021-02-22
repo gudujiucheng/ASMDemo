@@ -47,10 +47,12 @@ open class TBaseScheduledThreadPoolExecutor : ScheduledThreadPoolExecutor {
         poolInfo.poolName = poolName
         poolInfo.createStack = createStack
         poolInfo.createThreadId = Thread.currentThread().id
+        //存储线程池信息
         ThreadInfoManager.INSTANCE.putThreadPoolInfo(poolName, poolInfo)
     }
 
     private fun init() {
+        //包装factory 替换为我们自定义的factory
         threadFactory = TBaseThreadFactory(threadFactory, poolName)
     }
 
@@ -210,6 +212,7 @@ open class TBaseScheduledThreadPoolExecutor : ScheduledThreadPoolExecutor {
     override fun shutdown() {
         weakRunnableList.clear()
         super.shutdown()
+        //清除记录
         ThreadInfoManager.INSTANCE.shutDownPool(poolName)
     }
 
@@ -224,6 +227,7 @@ open class TBaseScheduledThreadPoolExecutor : ScheduledThreadPoolExecutor {
             }
         }
         weakRunnableList.clear()
+        //清除记录
         ThreadInfoManager.INSTANCE.shutDownPool(poolName)
         return list
     }
