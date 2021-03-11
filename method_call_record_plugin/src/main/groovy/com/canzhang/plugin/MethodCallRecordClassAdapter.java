@@ -70,9 +70,9 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                     //归属类、方法名、方法描述（返回值、入参类型）
                     if ("android/telephony/TelephonyManager".equals(owner)&& name.equals("getLine1Number") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
                         //加载一个常量
-                        mv.visitLdcInsn(className+"_"+outName);
-                        //调用我们自定义的方法
-                        mv.visitMethodInsn(INVOKESTATIC, "com/canzhang/asmdemo/sdk/MyTest", "recordStack", "(Ljava/lang/String;)V", false);
+                        mv.visitLdcInsn(className+"_"+outName+"_call:getLine1Number");
+                        //调用我们自定义的方法 (注意用/,不是.; 方法描述记得；也要)
+                        mv.visitMethodInsn(INVOKESTATIC, "com/canzhang/asmdemo/sdk/MethodRecordSDK", "recordMethodCall", "(Ljava/lang/String;)V", false);
                     }
                 }
                 super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
