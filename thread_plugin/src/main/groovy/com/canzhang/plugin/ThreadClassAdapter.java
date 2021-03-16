@@ -83,7 +83,7 @@ public final class ThreadClassAdapter extends ClassVisitor {
             @Override
             public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
                 String tempOwner = null;
-                if (name.equalsIgnoreCase("<init>")) {//替换了集成类之后，还需要修改对应的构造函数
+                if (name.equalsIgnoreCase("<init>")) {//替换了继承类之后，还需要修改对应的构造函数
                     switch (owner) {//这里要调整够赞函数所调用的方法为新基类的方法，不然调用的还是Thread的构造函数，而不是BaseThread的构造函数。
                         case S_Thread:
                             tempOwner = S_TBaseThread;

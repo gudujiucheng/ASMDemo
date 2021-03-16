@@ -1,11 +1,15 @@
 package com.canzhang.asmdemo;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -17,14 +21,27 @@ import asm.canzhang.com.asmdemo.R;
 
 public class MainActivity extends AppCompatActivity {
     ExecutorService mExecutorService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.tv_test).setOnClickListener(new View.OnClickListener() {
+
+        findViewById(R.id.bt_test0).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    getPhoneNumber(MainActivity.this);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        findViewById(R.id.bt_test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "普通点击事件", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "创建线程和线程池", Toast.LENGTH_SHORT).show();
 //                float div = div(10, 0);
                 testThread();
                 testThreadPoolExecutor();
@@ -32,33 +49,48 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        ThreadFactory threadFactory = new ThreadFactory(){
+        findViewById(R.id.bt_test_02).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "查询线程", Toast.LENGTH_SHORT).show();
+                getAllStackTraces();
+            }
+        });
+
+
+        ThreadFactory threadFactory = new ThreadFactory() {
 
             @Override
             public Thread newThread(Runnable r) {
-                return new Thread(r,"线程池中的线程" + '-' + mNumber.getAndIncrement());
+                return new Thread(r, "线程池中的线程" + '-' + mNumber.getAndIncrement());
             }
         };
         mExecutorService = new ThreadPoolExecutor(10, 10,
                 0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(),threadFactory);
+                new LinkedBlockingQueue<Runnable>(), threadFactory);
 
+        Thread.getAllStackTraces();
     }
 
-    private  static int  index=0;
+    public static String getPhoneNumber(Context context) {
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        return telephonyManager.getLine1Number();
+    }
+
+    private static int index = 0;
 
     private void testThread() {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(10*1000);
+                    Thread.sleep(10 * 1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         });
-        thread.setName("单独创建的线程-"+index);
+        thread.setName("单独创建的线程-" + index);
         thread.start();
         index++;
 
@@ -66,19 +98,37 @@ public class MainActivity extends AppCompatActivity {
 
 
     private final AtomicInteger mNumber = new AtomicInteger();
+
     private void testThreadPoolExecutor() {
 
         mExecutorService.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(10*1000);
+                    Thread.sleep(10 * 1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         });
 
+    }
+
+    private void getAllStackTraces() {
+        for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
+            Thread thread = entry.getKey();
+
+            StackTraceElement[] stackTraceElements = entry.getValue();
+
+            if (thread.equals(Thread.currentThread())) {
+                continue;
+            }
+
+            Log.e("Test", "\n线程： " + thread.getName() + "\n");
+            for (StackTraceElement element : stackTraceElements) {
+                Log.e("Test", "\t 调用栈分析" + element + "\n");
+            }
+        }
     }
 
     //测试异常捕获

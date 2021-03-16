@@ -1,3 +1,4 @@
+include ':method_call_record_plugin'
 include ':thread_lib'
 include ':thread_plugin'
 include ':try_catch_plugin'

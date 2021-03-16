@@ -16,7 +16,7 @@
             android:name=".ui.TrackerActivity"
             android:icon="@mipmap/threadtracker_launcher"
             android:roundIcon="@mipmap/threadtracker_launcher_round"
-            android:label="ThreadTracker"
+            android:label="@string/app_name"
             android:theme="@style/ThreadTrackerAppTheme"
             android:launchMode="singleTask"
             android:taskAffinity="com.canzhang.threadtracker.task">

@@ -3,13 +3,13 @@
 buildscript {
     
     repositories {
-        google()
-        jcenter()
         //本地调试仓库
         maven {
             url uri('repo')
-
         }
+        google()
+        jcenter()
+
         //如果想直接使用githup上面的，可以这么配置远端仓库
         maven { url "https://raw.githubusercontent.com/gudujiucheng/ASMDemo/master/repo" }
 
@@ -18,11 +18,12 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.2.1'
 
         //引用插件
-        classpath 'com.canzhang.android:canzhang_plugin:1.0.0-SNAPSHOT'
+//        classpath 'com.canzhang.android:canzhang_plugin:1.0.0-SNAPSHOT'
 
         //引用插件
 //        classpath 'com.canzhang.android:try_catch_plugin:1.0.0-SNAPSHOT'
-        classpath 'com.canzhang.android:thread_plugin:1.0.0-SNAPSHOT'
+//        classpath 'com.canzhang.android:thread_plugin:1.0.0-SNAPSHOT'
+        classpath 'com.canzhang.android:method_call_plugin:1.0.0-SNAPSHOT'
 
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72"
 

@@ -3,7 +3,6 @@ package com.canzhang.plugin;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.AdviceAdapter;
 
 import static org.objectweb.asm.Opcodes.ASM6;
@@ -42,8 +41,8 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
      * 这里可以拿到关于method的所有信息，比如方法名，方法的参数描述等
      *
      * @param access     方法的修饰符
-     * @param outName       方法名
-     * @param desc       方法签名（就是（参数列表）返回值类型拼接）
+     * @param outName    方法名
+     * @param desc       方法描述（就是（参数列表）返回值类型拼接）
      * @param signature  泛型相关信息
      * @param exceptions 方法抛出的异常信息
      * @return
@@ -51,33 +50,32 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
     @Override
     public MethodVisitor visitMethod(final int access, final String outName,
                                      final String desc, final String signature, final String[] exceptions) {
-
         MethodVisitor mv = super.visitMethod(access, outName, desc, signature, exceptions);
         mv = new AdviceAdapter(ASM6, mv, access, outName, desc) {
-            @Override
-            public void visitInsn(int opcode) {
-                super.visitInsn(opcode);
-            }
-
-            //访问调用方法的指令
+            /**
+             * 访问调用方法的指令（这里仅针对调用方法的指令，其他指令还有返回指令，异常抛出指令一类的）
+             * @param opcode 指令
+             * @param owner  指令所调用的方法归属的类
+             * @param name   方法名
+             * @param descriptor 方法描述（就是（参数列表）返回值类型拼接）
+             * @param isInterface 是否接口
+             */
             @Override
             public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-
                 if ("getLine1Number".equals(name)) {
                     LogUtils.log("--------------->>>>>\n\nopcode(操作码):" + opcode + "\n\nowner(归属类):" + owner + "\n\nname（方法名）:" + name + "\n\ndescriptor（方法描述符）:" + descriptor + "\n\nisInterface（是否接口）:" + isInterface + "\n\noutMethodName（上层方法名）:" + outName);
                 }
                 if (opcode == Opcodes.INVOKEVIRTUAL) {//调用实例方法
                     //归属类、方法名、方法描述（返回值、入参类型）
-                    if ("android/telephony/TelephonyManager".equals(owner)&& name.equals("getLine1Number") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
+                    if ("android/telephony/TelephonyManager".equals(owner) && name.equals("getLine1Number") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
                         //加载一个常量
-                        mv.visitLdcInsn(className+"_"+outName+"_call:getLine1Number");
+                        mv.visitLdcInsn(className + "_" + outName + "_call:getLine1Number");
                         //调用我们自定义的方法 (注意用/,不是.; 方法描述记得；也要)
                         mv.visitMethodInsn(INVOKESTATIC, "com/canzhang/asmdemo/sdk/MethodRecordSDK", "recordMethodCall", "(Ljava/lang/String;)V", false);
                     }
                 }
                 super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
             }
-
         };
         return mv;
 

@@ -1,3 +1,4 @@
 <resources>
     <!--   <string name="app_name">ThreadTracker</string>-->
+    <string name="app_name">线程分析</string>
 </resources>
