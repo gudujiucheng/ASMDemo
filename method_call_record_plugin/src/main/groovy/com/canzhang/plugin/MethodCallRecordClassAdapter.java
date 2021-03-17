@@ -62,7 +62,7 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
              */
             @Override
             public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-                if ("requestPermissions".equals(name)&&("android/support/v4/app/ActivityCompat".equals(owner)||"androidx/core/app/ActivityCompat".equals(owner))) {
+                if ("getString".equals(name)&&"android/provider/Settings$System".equals(owner)) {
                     LogUtils.log("--------------->>>>>\n\nopcode(操作码):" + opcode + "\n\nowner(归属类):" + owner + "\n\nname（方法名）:" + name + "\n\ndescriptor（方法描述符）:" + descriptor + "\n\nisInterface（是否接口）:" + isInterface + "\n\noutMethodName（上层类名_方法名）:" +className+"_"+ outName);
                 }
                 if (opcode == Opcodes.INVOKEVIRTUAL) {//调用实例方法
@@ -77,8 +77,14 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                 if(opcode == Opcodes.INVOKESTATIC){//调用静态方法
 
                     //监控申请权限调用的api
-                    if (!"com/canzhang/asmdemo/sdk/MethodRecordSDK".equals(className)&&("android/support/v4/app/ActivityCompat".equals(owner)||"androidx/core/app/ActivityCompat".equals(owner)) && name.equals("requestPermissions") && descriptor.equalsIgnoreCase("(Landroid/app/Activity;[Ljava/lang/String;I)V")) {
+                    if (!isSdkPath() &&("android/support/v4/app/ActivityCompat".equals(owner)||"androidx/core/app/ActivityCompat".equals(owner)) && name.equals("requestPermissions") && descriptor.equalsIgnoreCase("(Landroid/app/Activity;[Ljava/lang/String;I)V")) {
 
+                        //变更父类
+                        super.visitMethodInsn(opcode, "com/canzhang/asmdemo/sdk/MethodRecordSDK", name, descriptor, isInterface);
+                        return;
+                    }
+
+                    if(!isSdkPath() &&"android/provider/Settings$System".equals(owner) && name.equals("getString") && descriptor.equalsIgnoreCase("(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;")){
                         //变更父类
                         super.visitMethodInsn(opcode, "com/canzhang/asmdemo/sdk/MethodRecordSDK", name, descriptor, isInterface);
                         return;
@@ -93,6 +99,10 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
         };
         return mv;
 
+    }
+
+    private boolean isSdkPath() {
+        return "com/canzhang/asmdemo/sdk/MethodRecordSDK".equals(className);
     }
 
 

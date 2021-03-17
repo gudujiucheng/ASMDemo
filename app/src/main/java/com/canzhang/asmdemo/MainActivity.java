@@ -3,6 +3,7 @@ package com.canzhang.asmdemo;
 import android.Manifest;
 import android.content.Context;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
@@ -33,8 +34,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try{
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 0);
+//                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 0);
 //                    getPhoneNumber(MainActivity.this);
+                   Settings.System.getString(MainActivity.this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }
