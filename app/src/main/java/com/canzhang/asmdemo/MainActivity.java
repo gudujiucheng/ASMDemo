@@ -1,5 +1,6 @@
 package com.canzhang.asmdemo;
 
+import android.Manifest;
 import android.content.Context;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -31,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try{
-                    getPhoneNumber(MainActivity.this);
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 0);
+//                    getPhoneNumber(MainActivity.this);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
