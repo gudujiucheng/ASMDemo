@@ -1,7 +1,13 @@
 package com.canzhang.asmdemo;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
@@ -12,6 +18,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import java.lang.reflect.Method;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -33,12 +45,53 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bt_test0).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try{
+                try {
 //                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 0);
 //                    getPhoneNumber(MainActivity.this);
-                   Settings.System.getString(MainActivity.this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-                }catch (Exception e){
+
+
+//                   Settings.System.getString(MainActivity.this.getContentResolver(), Settings.Secure.ANDROID_ID);
+//                   Settings.Secure.getString(MainActivity.this.getContentResolver(),Settings.Secure.ANDROID_ID);
+
+
+
+//                    final PackageManager packageManager = MainActivity.this.getPackageManager();
+//                    //获取所有已安装程序的包信息
+//                    List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+//
+//
+//                    TelephonyManager tm = (TelephonyManager) MainActivity.this.getSystemService(TELEPHONY_SERVICE);
+//                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+//                        tm.getDeviceId();
+//                    } else {
+//                        Method method = tm.getClass().getMethod("getImei");
+//                        method.invoke(tm);
+//                    }
+//
+//
+//
+//                    WifiManager wifi = (WifiManager)MainActivity.this.getSystemService("wifi");
+//                    WifiInfo info = wifi.getConnectionInfo();
+//                    if (info != null) {
+//                         info.getMacAddress();
+//                    }
+
+//                    String   model= android.os.Build.MODEL;
+
+//                    getPsdnIp();
+
+
+
+
+                    ActivityManager.RunningAppProcessInfo myProcess = null;
+                    ActivityManager activityManager =
+                            (ActivityManager) MainActivity.this.getSystemService(Context.ACTIVITY_SERVICE);
+
+                    List<ActivityManager.RunningAppProcessInfo> appProcessList = activityManager
+                            .getRunningAppProcesses();
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -141,4 +194,33 @@ public class MainActivity extends AppCompatActivity {
     private float div(int a, int b) {
         return a / b;
     }
+
+
+    /**
+     * 用来获取手机拨号上网（包括CTWAP和CTNET）时由PDSN分配给手机终端的源IP地址。
+     *
+     * @return
+     * @author SHANHY
+     */
+    public static String getPsdnIp() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+                        return inetAddress.getHostAddress().toString();
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+        return "";
+    }
+
+
+
+
+
+
 }

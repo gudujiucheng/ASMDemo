@@ -9,9 +9,16 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
-import com.canzhang.asmdemo.MainActivity;
+
 
 public class MethodRecordSDK {
+    public static void recordLoadFiled(String from) {
+        if(!from.contains("MODEL")){//只关注这个字段
+            return;
+        }
+        Log.d("MethodRecordSDK_", "~~~~~~~~~~~~~~~~~~~~~~~ 加载的敏感字段是：" + from);
+        printStackTrace("敏感字段");
+    }
     public static void recordMethodCall(String from) {
         Log.e("MethodRecordSDK", "调用的方法是：" + from);
         printStackTrace("敏感函数");

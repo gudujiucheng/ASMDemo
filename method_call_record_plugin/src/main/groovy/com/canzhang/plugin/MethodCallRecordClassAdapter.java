@@ -52,6 +52,25 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                                      final String desc, final String signature, final String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, outName, desc, signature, exceptions);
         mv = new AdviceAdapter(ASM6, mv, access, outName, desc) {
+
+
+            @Override
+            public void visitFieldInsn(int opcode, String owner, String name, String desc) {
+//                if("com/canzhang/asmdemo/sdk/MyTest".equals(className)){
+//                    LogUtils.log("--------------->>>>>\n\nopcode(操作码):" + opcode + "\n\nowner:" + owner + "\n\nname（:" + name + "\n\ndesc:" + desc + "\n\noutMethodName（上层类名_方法名）:" +className+"_"+ outName);
+//
+//                }
+                if (opcode == Opcodes.GETSTATIC && "android/os/Build".equals(owner)) {
+                    //加载一个常量
+                    mv.visitLdcInsn(className + "_" + outName + "_load: fieldName:" + name + " fieldDesc:" + desc + " fieldOwner:" + owner);
+                    //调用我们自定义的方法 (注意用/,不是.; 方法描述记得；也要)
+                    mv.visitMethodInsn(INVOKESTATIC, "com/canzhang/asmdemo/sdk/MethodRecordSDK", "recordLoadFiled", "(Ljava/lang/String;)V", false);
+                }
+                super.visitFieldInsn(opcode, owner, name, desc);
+
+
+            }
+
             /**
              * 访问调用方法的指令（这里仅针对调用方法的指令，其他指令还有返回指令，异常抛出指令一类的）
              * @param opcode 指令
@@ -62,35 +81,74 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
              */
             @Override
             public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-                if ("getString".equals(name)&&"android/provider/Settings$System".equals(owner)) {
-                    LogUtils.log("--------------->>>>>\n\nopcode(操作码):" + opcode + "\n\nowner(归属类):" + owner + "\n\nname（方法名）:" + name + "\n\ndescriptor（方法描述符）:" + descriptor + "\n\nisInterface（是否接口）:" + isInterface + "\n\noutMethodName（上层类名_方法名）:" +className+"_"+ outName);
+                if ("getRunningAppProcesses".equals(name)) {
+                    LogUtils.log("--------------->>>>>\n\nopcode(操作码):" + opcode + "\n\nowner(归属类):" + owner + "\n\nname（方法名）:" + name + "\n\ndescriptor（方法描述符）:" + descriptor + "\n\nisInterface（是否接口）:" + isInterface + "\n\noutMethodName（上层类名_方法名）:" + className + "_" + outName);
                 }
+//                ApplicationPackageManager
                 if (opcode == Opcodes.INVOKEVIRTUAL) {//调用实例方法
                     //归属类、方法名、方法描述（返回值、入参类型）
+                    String recordMethodName = null;
                     if ("android/telephony/TelephonyManager".equals(owner) && name.equals("getLine1Number") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
+                        recordMethodName = "getLine1Number";
+                    }
+
+                    if ("android/telephony/TelephonyManager".equals(owner) && name.equals("getDeviceId") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
+                        recordMethodName = "getDeviceId";
+                    }
+
+                    if ("android/telephony/TelephonyManager".equals(owner) && name.equals("getSimSerialNumber") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
+                        recordMethodName = "getSimSerialNumber";
+                    }
+
+                    if ("android/telephony/TelephonyManager".equals(owner) && name.equals("getSubscriberId") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
+                        recordMethodName = "getSubscriberId";
+                    }
+
+                    if ("android/content/pm/PackageManager".equals(owner) && name.equals("getInstalledPackages") && descriptor.equalsIgnoreCase("(I)Ljava/util/List;")) {
+                        recordMethodName = "getInstalledPackages";
+                    }
+
+                    if ("android/net/wifi/WifiInfo".equals(owner) && name.equals("getMacAddress") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
+                        recordMethodName = "getMacAddress";
+                    }
+
+                    if ("java/net/NetworkInterface".equals(owner) && name.equals("getInetAddresses") && descriptor.equalsIgnoreCase("()Ljava/util/Enumeration;")) {
+                        recordMethodName = "getInetAddresses";
+                    }
+
+                    if ("java/net/InetAddress".equals(owner) && name.equals("getHostAddress") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
+                        recordMethodName = "getHostAddress";
+                    }
+
+                    if ("android/app/ActivityManager".equals(owner) && name.equals("getRunningAppProcesses") && descriptor.equalsIgnoreCase("()Ljava/util/List;")) {
+                        recordMethodName = "getRunningAppProcesses";
+                    }
+
+
+                    if (recordMethodName != null) {
                         //加载一个常量
-                        mv.visitLdcInsn(className + "_" + outName + "_call:getLine1Number");
+                        mv.visitLdcInsn(className + "_" + outName + "_call:" + recordMethodName);
                         //调用我们自定义的方法 (注意用/,不是.; 方法描述记得；也要)
                         mv.visitMethodInsn(INVOKESTATIC, "com/canzhang/asmdemo/sdk/MethodRecordSDK", "recordMethodCall", "(Ljava/lang/String;)V", false);
                     }
+
+
                 }
-                if(opcode == Opcodes.INVOKESTATIC){//调用静态方法
+                if (opcode == Opcodes.INVOKESTATIC) {//调用静态方法
 
                     //监控申请权限调用的api
-                    if (!isSdkPath() &&("android/support/v4/app/ActivityCompat".equals(owner)||"androidx/core/app/ActivityCompat".equals(owner)) && name.equals("requestPermissions") && descriptor.equalsIgnoreCase("(Landroid/app/Activity;[Ljava/lang/String;I)V")) {
+                    if (!isSdkPath() && ("android/support/v4/app/ActivityCompat".equals(owner) || "androidx/core/app/ActivityCompat".equals(owner)) && name.equals("requestPermissions") && descriptor.equalsIgnoreCase("(Landroid/app/Activity;[Ljava/lang/String;I)V")) {
 
                         //变更父类
                         super.visitMethodInsn(opcode, "com/canzhang/asmdemo/sdk/MethodRecordSDK", name, descriptor, isInterface);
                         return;
                     }
 
-                    if(!isSdkPath() &&"android/provider/Settings$System".equals(owner) && name.equals("getString") && descriptor.equalsIgnoreCase("(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;")){
+                    if (!isSdkPath() && ("android/provider/Settings$System".equals(owner)||"android/provider/Settings$Secure".equals(owner)) && name.equals("getString") && descriptor.equalsIgnoreCase("(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;")) {
                         //变更父类
                         super.visitMethodInsn(opcode, "com/canzhang/asmdemo/sdk/MethodRecordSDK", name, descriptor, isInterface);
                         return;
                     }
-
-
 
 
                 }
