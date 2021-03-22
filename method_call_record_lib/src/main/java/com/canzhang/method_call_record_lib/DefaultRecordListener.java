@@ -17,7 +17,7 @@ public class DefaultRecordListener implements RecordCallListener {
 
     @Override
     public void onRecordLoadFiled(String field) {
-        Log.d("MethodRecordSDK_", "~~~~~~~~~~~~~~~~~~~~~~~ 加载的敏感字段是：" + field);
+        Log.d("MethodRecordSDK", "~~~~~~~~~~~~~~~~~~~~~~~ 加载的敏感字段是：" + field);
         printStackTrace("敏感字段:"+filedCallNum.addAndGet(1));
     }
 

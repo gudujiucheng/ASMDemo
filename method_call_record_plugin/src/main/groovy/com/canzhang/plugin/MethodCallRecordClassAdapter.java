@@ -109,8 +109,10 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                     if ("android/net/wifi/WifiInfo".equals(owner) && name.equals("getMacAddress") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
                         recordMethodName = "getMacAddress";
                     }
-
-                    //阀门把这个api 认为是获取用户mac地址
+                    if ("android/net/wifi/WifiInfo".equals(owner) && name.equals("getSSID") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
+                        recordMethodName = "getSSID";
+                    }
+                    //阀门把这个api 认为是获取用户mac地址  IP地址
                     if ("java/net/NetworkInterface".equals(owner) && name.equals("getInetAddresses") && descriptor.equalsIgnoreCase("()Ljava/util/Enumeration;")) {
                         recordMethodName = "getInetAddresses";
                     }

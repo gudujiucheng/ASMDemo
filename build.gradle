@@ -23,7 +23,7 @@ buildscript {
         //引用插件
 //        classpath 'com.canzhang.android:try_catch_plugin:1.0.0-SNAPSHOT'
 //        classpath 'com.canzhang.android:thread_plugin:1.0.0-SNAPSHOT'
-        classpath 'com.canzhang.android:method_call_plugin:1.0.0-SNAPSHOT'
+//        classpath 'com.canzhang.android:method_call_plugin:1.0.0-SNAPSHOT'
 
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.72"
 

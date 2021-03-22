@@ -59,11 +59,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                    final PackageManager packageManager = MainActivity.this.getPackageManager();
-                    //获取所有已安装程序的包信息
-                    List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
-
-                    List<ApplicationInfo> installedApplications = packageManager.getInstalledApplications(0);
+//                    final PackageManager packageManager = MainActivity.this.getPackageManager();
+//                    //获取所有已安装程序的包信息
+//                    List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+//
+//                    List<ApplicationInfo> installedApplications = packageManager.getInstalledApplications(0);
 //
 //
 //                    TelephonyManager tm = (TelephonyManager) MainActivity.this.getSystemService(TELEPHONY_SERVICE);
@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 //                    WifiInfo info = wifi.getConnectionInfo();
 //                    if (info != null) {
 //                         info.getMacAddress();
+//                         info.getSSID();
 //                    }
 
 //                    String   model= android.os.Build.MODEL;

@@ -9,7 +9,7 @@ apply plugin: 'com.android.application'
 //}
 
 //apply plugin: 'com.canzhang.thread_plugin'
-apply plugin: 'com.canzhang.method_call_record_plugin'
+//apply plugin: 'com.canzhang.method_call_record_plugin'
 
 android {
     compileSdkVersion 29
