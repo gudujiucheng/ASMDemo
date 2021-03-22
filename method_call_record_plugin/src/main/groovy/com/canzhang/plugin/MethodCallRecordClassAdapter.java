@@ -81,7 +81,7 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
              */
             @Override
             public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-                if ("getRunningAppProcesses".equals(name)) {
+                if ("getInstalledApplications".equals(name)) {
                     LogUtils.log("--------------->>>>>\n\nopcode(操作码):" + opcode + "\n\nowner(归属类):" + owner + "\n\nname（方法名）:" + name + "\n\ndescriptor（方法描述符）:" + descriptor + "\n\nisInterface（是否接口）:" + isInterface + "\n\noutMethodName（上层类名_方法名）:" + className + "_" + outName);
                 }
 //                ApplicationPackageManager
@@ -104,14 +104,12 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                         recordMethodName = "getSubscriberId";
                     }
 
-                    if ("android/content/pm/PackageManager".equals(owner) && name.equals("getInstalledPackages") && descriptor.equalsIgnoreCase("(I)Ljava/util/List;")) {
-                        recordMethodName = "getInstalledPackages";
-                    }
 
                     if ("android/net/wifi/WifiInfo".equals(owner) && name.equals("getMacAddress") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
                         recordMethodName = "getMacAddress";
                     }
 
+                    //阀门把这个api 认为是获取用户mac地址
                     if ("java/net/NetworkInterface".equals(owner) && name.equals("getInetAddresses") && descriptor.equalsIgnoreCase("()Ljava/util/Enumeration;")) {
                         recordMethodName = "getInetAddresses";
                     }
@@ -120,8 +118,30 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                         recordMethodName = "getHostAddress";
                     }
 
+                    //阀门把下面的api 都认为是获取已安装应用列表（
+                    // 1.queryIntentActivities
+                    //2.getInstalledPackages
+                    //3.getInstalledApplications
+                    //4.getRunningServices
+                    //5.getRunningAppProcesses
+                    //6.pm pm list package （这个是命令行 暂未添加监控））
+                    if ("android/content/pm/PackageManager".equals(owner) && name.equals("getInstalledPackages") && descriptor.equalsIgnoreCase("(I)Ljava/util/List;")) {
+                        recordMethodName = "getInstalledPackages";
+                    }
+
+                    if ("android/content/pm/PackageManager".equals(owner) && name.equals("getInstalledApplications") && descriptor.equalsIgnoreCase("(I)Ljava/util/List;")) {
+                        recordMethodName = "getInstalledApplications";
+                    }
+
+                    if ("android/app/ActivityManager".equals(owner) && name.equals("getRunningServices") && descriptor.equalsIgnoreCase("(I)Ljava/util/List;")) {
+                        recordMethodName = "getRunningServices";
+                    }
                     if ("android/app/ActivityManager".equals(owner) && name.equals("getRunningAppProcesses") && descriptor.equalsIgnoreCase("()Ljava/util/List;")) {
                         recordMethodName = "getRunningAppProcesses";
+                    }
+
+                    if ("android/content/pm/PackageManager".equals(owner) && name.equals("queryIntentActivities") && descriptor.equalsIgnoreCase("(Landroid/content/Intent;I)Ljava/util/List;")) {
+                        recordMethodName = "queryIntentActivities";
                     }
 
 
@@ -144,7 +164,7 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                         return;
                     }
 
-                    if (!isSdkPath() && ("android/provider/Settings$System".equals(owner)||"android/provider/Settings$Secure".equals(owner)) && name.equals("getString") && descriptor.equalsIgnoreCase("(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;")) {
+                    if (!isSdkPath() && ("android/provider/Settings$System".equals(owner) || "android/provider/Settings$Secure".equals(owner)) && name.equals("getString") && descriptor.equalsIgnoreCase("(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;")) {
                         //变更父类
                         super.visitMethodInsn(opcode, "com/canzhang/asmdemo/sdk/MethodRecordSDK", name, descriptor, isInterface);
                         return;

@@ -3,8 +3,11 @@ package com.canzhang.asmdemo;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -56,9 +59,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//                    final PackageManager packageManager = MainActivity.this.getPackageManager();
-//                    //获取所有已安装程序的包信息
-//                    List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+                    final PackageManager packageManager = MainActivity.this.getPackageManager();
+                    //获取所有已安装程序的包信息
+                    List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+
+                    List<ApplicationInfo> installedApplications = packageManager.getInstalledApplications(0);
 //
 //
 //                    TelephonyManager tm = (TelephonyManager) MainActivity.this.getSystemService(TELEPHONY_SERVICE);
@@ -87,9 +92,15 @@ public class MainActivity extends AppCompatActivity {
                     ActivityManager.RunningAppProcessInfo myProcess = null;
                     ActivityManager activityManager =
                             (ActivityManager) MainActivity.this.getSystemService(Context.ACTIVITY_SERVICE);
-
                     List<ActivityManager.RunningAppProcessInfo> appProcessList = activityManager
                             .getRunningAppProcesses();
+                    activityManager
+                            .getRunningServices(0);
+
+
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_HOME);
+                    List<ResolveInfo> resolveInfos =  MainActivity.this.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 
                 } catch (Exception e) {
                     e.printStackTrace();
