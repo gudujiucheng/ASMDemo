@@ -76,12 +76,12 @@ public class MainActivity extends AppCompatActivity {
 //
 //
 //
-//                    WifiManager wifi = (WifiManager)MainActivity.this.getSystemService("wifi");
-//                    WifiInfo info = wifi.getConnectionInfo();
-//                    if (info != null) {
-//                         info.getMacAddress();
-//                         info.getSSID();
-//                    }
+                    WifiManager wifi = (WifiManager)MainActivity.this.getSystemService("wifi");
+                    WifiInfo info = wifi.getConnectionInfo();
+                    if (info != null) {
+                         info.getMacAddress();
+                         info.getSSID();
+                    }
 
 //                    String   model= android.os.Build.MODEL;
 
@@ -90,18 +90,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                    ActivityManager.RunningAppProcessInfo myProcess = null;
-                    ActivityManager activityManager =
-                            (ActivityManager) MainActivity.this.getSystemService(Context.ACTIVITY_SERVICE);
-                    List<ActivityManager.RunningAppProcessInfo> appProcessList = activityManager
-                            .getRunningAppProcesses();
-                    activityManager
-                            .getRunningServices(0);
-
-
-                    Intent intent = new Intent(Intent.ACTION_MAIN);
-                    intent.addCategory(Intent.CATEGORY_HOME);
-                    List<ResolveInfo> resolveInfos =  MainActivity.this.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+//                    ActivityManager.RunningAppProcessInfo myProcess = null;
+//                    ActivityManager activityManager =
+//                            (ActivityManager) MainActivity.this.getSystemService(Context.ACTIVITY_SERVICE);
+//                    List<ActivityManager.RunningAppProcessInfo> appProcessList = activityManager
+//                            .getRunningAppProcesses();
+//                    activityManager
+//                            .getRunningServices(0);
+//
+//
+//                    Intent intent = new Intent(Intent.ACTION_MAIN);
+//                    intent.addCategory(Intent.CATEGORY_HOME);
+//                    List<ResolveInfo> resolveInfos =  MainActivity.this.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
 
                 } catch (Exception e) {
                     e.printStackTrace();
