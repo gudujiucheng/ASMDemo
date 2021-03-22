@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <groupId>com.canzhang.android</groupId>
-  <artifactId>method_call_plugin</artifactId>
+  <artifactId>method_call_record_lib</artifactId>
   <versioning>
     <versions>
       <version>1.0.0-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20210322071436</lastUpdated>
+    <lastUpdated>20210322070030</lastUpdated>
   </versioning>
 </metadata>

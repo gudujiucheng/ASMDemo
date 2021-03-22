@@ -13,6 +13,7 @@ import static org.objectweb.asm.Opcodes.ASM6;
 public final class MethodCallRecordClassAdapter extends ClassVisitor {
 
     private String className;
+    private String sdkClassPath = "com/canzhang/method_call_record_lib/MethodRecordSDK";
 
 
     MethodCallRecordClassAdapter(final ClassVisitor cv) {
@@ -64,7 +65,7 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                     //加载一个常量
                     mv.visitLdcInsn(className + "_" + outName + "_load: fieldName:" + name + " fieldDesc:" + desc + " fieldOwner:" + owner);
                     //调用我们自定义的方法 (注意用/,不是.; 方法描述记得；也要)
-                    mv.visitMethodInsn(INVOKESTATIC, "com/canzhang/asmdemo/sdk/MethodRecordSDK", "recordLoadFiled", "(Ljava/lang/String;)V", false);
+                    mv.visitMethodInsn(INVOKESTATIC, sdkClassPath, "recordLoadFiled", "(Ljava/lang/String;)V", false);
                 }
                 super.visitFieldInsn(opcode, owner, name, desc);
 
@@ -149,7 +150,7 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                         //加载一个常量
                         mv.visitLdcInsn(className + "_" + outName + "_call:" + recordMethodName);
                         //调用我们自定义的方法 (注意用/,不是.; 方法描述记得；也要)
-                        mv.visitMethodInsn(INVOKESTATIC, "com/canzhang/asmdemo/sdk/MethodRecordSDK", "recordMethodCall", "(Ljava/lang/String;)V", false);
+                        mv.visitMethodInsn(INVOKESTATIC, sdkClassPath, "recordMethodCall", "(Ljava/lang/String;)V", false);
                     }
 
 
@@ -160,13 +161,13 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                     if (!isSdkPath() && ("android/support/v4/app/ActivityCompat".equals(owner) || "androidx/core/app/ActivityCompat".equals(owner)) && name.equals("requestPermissions") && descriptor.equalsIgnoreCase("(Landroid/app/Activity;[Ljava/lang/String;I)V")) {
 
                         //变更父类
-                        super.visitMethodInsn(opcode, "com/canzhang/asmdemo/sdk/MethodRecordSDK", name, descriptor, isInterface);
+                        super.visitMethodInsn(opcode, sdkClassPath, name, descriptor, isInterface);
                         return;
                     }
 
                     if (!isSdkPath() && ("android/provider/Settings$System".equals(owner) || "android/provider/Settings$Secure".equals(owner)) && name.equals("getString") && descriptor.equalsIgnoreCase("(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;")) {
                         //变更父类
-                        super.visitMethodInsn(opcode, "com/canzhang/asmdemo/sdk/MethodRecordSDK", name, descriptor, isInterface);
+                        super.visitMethodInsn(opcode, sdkClassPath, name, descriptor, isInterface);
                         return;
                     }
 
@@ -180,7 +181,7 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
     }
 
     private boolean isSdkPath() {
-        return "com/canzhang/asmdemo/sdk/MethodRecordSDK".equals(className);
+        return sdkClassPath.equals(className);
     }
 
 
