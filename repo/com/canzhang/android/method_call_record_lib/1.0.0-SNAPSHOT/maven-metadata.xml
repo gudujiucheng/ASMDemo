@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.canzhang.android</groupId>
+  <artifactId>method_call_record_lib</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20210322.072905</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20210322072905</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>aar</extension>
+        <value>1.0.0-20210322.072905-1</value>
+        <updated>20210322072905</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.0.0-20210322.072905-1</value>
+        <updated>20210322072905</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
