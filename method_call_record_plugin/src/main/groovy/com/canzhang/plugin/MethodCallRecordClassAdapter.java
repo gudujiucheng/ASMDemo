@@ -157,14 +157,6 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                 }
                 if (opcode == Opcodes.INVOKESTATIC) {//调用静态方法
 
-                    //监控申请权限调用的api
-                    if (!isSdkPath() && ("android/support/v4/app/ActivityCompat".equals(owner) || "androidx/core/app/ActivityCompat".equals(owner)) && name.equals("requestPermissions") && descriptor.equalsIgnoreCase("(Landroid/app/Activity;[Ljava/lang/String;I)V")) {
-
-                        //变更父类
-                        super.visitMethodInsn(opcode, sdkClassPath, name, descriptor, isInterface);
-                        return;
-                    }
-
                     if (!isSdkPath() && ("android/provider/Settings$System".equals(owner) || "android/provider/Settings$Secure".equals(owner)) && name.equals("getString") && descriptor.equalsIgnoreCase("(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;")) {
                         //变更父类
                         super.visitMethodInsn(opcode, sdkClassPath, name, descriptor, isInterface);
