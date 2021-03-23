@@ -1,0 +1,38 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation 'com.android.tools.build:gradle:3.2.1'
+    implementation 'com.android.tools.build:gradle-api:3.2.1'
+    implementation 'commons-io:commons-io:2.6'
+    implementation 'commons-codec:commons-codec:1.10'
+    //noinspection GradleDependency
+    implementation 'org.ow2.asm:asm:6.0'
+    //noinspection GradleDependency
+    implementation 'org.ow2.asm:asm-util:6.0'
+    //noinspection GradleDependency
+    implementation 'org.ow2.asm:asm-commons:6.0'
+    implementation 'com.quinn.hunter:hunter-transform:1.0.0'
+
+}
+
+//调试模式下在本地生成仓库
+uploadArchives {
+    repositories.mavenDeployer {
+        //本地仓库路径，以放到项目根目录下的 repo 的文件夹为例
+        repository(url: uri('../repo'))
+
+        //groupId ，自行定义
+        pom.groupId = 'com.canzhang.android'
+
+        //artifactId
+        pom.artifactId = 'slow_method_plugin'
+
+        //插件版本号
+        pom.version = '1.0.0-SNAPSHOT'
+    }
+}

@@ -48,64 +48,15 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.bt_test0).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 try {
-//                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 0);
-//                    getPhoneNumber(MainActivity.this);
-
-
-
-//                   Settings.System.getString(MainActivity.this.getContentResolver(), Settings.Secure.ANDROID_ID);
-//                   Settings.Secure.getString(MainActivity.this.getContentResolver(),Settings.Secure.ANDROID_ID);
-
-
-
-//                    final PackageManager packageManager = MainActivity.this.getPackageManager();
-//                    //获取所有已安装程序的包信息
-//                    List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
-//
-//                    List<ApplicationInfo> installedApplications = packageManager.getInstalledApplications(0);
-//
-//
-//                    TelephonyManager tm = (TelephonyManager) MainActivity.this.getSystemService(TELEPHONY_SERVICE);
-//                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//                        tm.getDeviceId();
-//                    } else {
-//                        Method method = tm.getClass().getMethod("getImei");
-//                        method.invoke(tm);
-//                    }
-//
-//
-//
-                    WifiManager wifi = (WifiManager)MainActivity.this.getSystemService("wifi");
-                    WifiInfo info = wifi.getConnectionInfo();
-                    if (info != null) {
-                         info.getMacAddress();
-                         info.getSSID();
-                    }
-
-//                    String   model= android.os.Build.MODEL;
-
-//                    getPsdnIp();
-
-
-
-
-//                    ActivityManager.RunningAppProcessInfo myProcess = null;
-//                    ActivityManager activityManager =
-//                            (ActivityManager) MainActivity.this.getSystemService(Context.ACTIVITY_SERVICE);
-//                    List<ActivityManager.RunningAppProcessInfo> appProcessList = activityManager
-//                            .getRunningAppProcesses();
-//                    activityManager
-//                            .getRunningServices(0);
-//
-//
-//                    Intent intent = new Intent(Intent.ACTION_MAIN);
-//                    intent.addCategory(Intent.CATEGORY_HOME);
-//                    List<ResolveInfo> resolveInfos =  MainActivity.this.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-
-                } catch (Exception e) {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
+
+//                testMethodCallOrFieldLod();
             }
         });
 
@@ -141,6 +92,67 @@ public class MainActivity extends AppCompatActivity {
                 new LinkedBlockingQueue<Runnable>(), threadFactory);
 
         Thread.getAllStackTraces();
+    }
+
+    /**
+     * 测试方法调用或则字段加载的 插桩效果
+     */
+    private void testMethodCallOrFieldLod() {
+        try {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 0);
+            getPhoneNumber(MainActivity.this);
+
+
+
+           Settings.System.getString(MainActivity.this.getContentResolver(), Settings.Secure.ANDROID_ID);
+           Settings.Secure.getString(MainActivity.this.getContentResolver(),Settings.Secure.ANDROID_ID);
+
+
+
+            final PackageManager packageManager = MainActivity.this.getPackageManager();
+            //获取所有已安装程序的包信息
+            List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+
+            List<ApplicationInfo> installedApplications = packageManager.getInstalledApplications(0);
+
+
+            TelephonyManager tm = (TelephonyManager) MainActivity.this.getSystemService(TELEPHONY_SERVICE);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                tm.getDeviceId();
+            } else {
+                Method method = tm.getClass().getMethod("getImei");
+                method.invoke(tm);
+            }
+
+
+
+            WifiManager wifi = (WifiManager)MainActivity.this.getSystemService("wifi");
+            WifiInfo info = wifi.getConnectionInfo();
+            if (info != null) {
+                 info.getMacAddress();
+                 info.getSSID();
+            }
+
+            String   model= Build.MODEL;
+
+            getPsdnIp();
+
+            ActivityManager.RunningAppProcessInfo myProcess = null;
+            ActivityManager activityManager =
+                    (ActivityManager) MainActivity.this.getSystemService(Context.ACTIVITY_SERVICE);
+            List<ActivityManager.RunningAppProcessInfo> appProcessList = activityManager
+                    .getRunningAppProcesses();
+            activityManager
+                    .getRunningServices(0);
+
+
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            List<ResolveInfo> resolveInfos =  MainActivity.this.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static String getPhoneNumber(Context context) {

@@ -18,7 +18,7 @@ public final class TryCatchClassAdapter extends ClassVisitor {
 
 
     TryCatchClassAdapter(final ClassVisitor cv, List<String> tryCatchMethodNameList) {
-        super(Opcodes.ASM5, cv);
+        super(Opcodes.ASM6, cv);
         this.tryCatchMethodNameList = tryCatchMethodNameList;
     }
 

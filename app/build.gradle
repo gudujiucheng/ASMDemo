@@ -9,7 +9,8 @@ apply plugin: 'com.android.application'
 //}
 
 //apply plugin: 'com.canzhang.thread_plugin'
-apply plugin: 'com.canzhang.method_call_record_plugin'
+//apply plugin: 'com.canzhang.method_call_record_plugin'
+apply plugin: 'com.canzhang.slow_method_plugin'
 
 android {
     compileSdkVersion 29
@@ -38,5 +39,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation project(":thread_lib")
     implementation project(":method_call_record_lib")
+    implementation project(":slow_method_lib")
 //    implementation 'com.canzhang.android:thread_lib:1.0.0-SNAPSHOT'
 }
