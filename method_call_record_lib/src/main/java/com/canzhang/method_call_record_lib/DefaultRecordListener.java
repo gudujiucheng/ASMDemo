@@ -1,7 +1,5 @@
 package com.canzhang.method_call_record_lib;
 
-import android.content.ContentResolver;
-import android.provider.Settings;
 import android.util.Log;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,11 +20,6 @@ public class DefaultRecordListener implements RecordCallListener {
     }
 
 
-
-
-
-
-
     private synchronized static void printStackTrace(String tips) {
         Log.e("MethodRecordSDK", String.format("\n\n----------------------%s调用堆栈开始------------------------\n\n", tips));
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
@@ -36,8 +29,4 @@ public class DefaultRecordListener implements RecordCallListener {
         Log.e("MethodRecordSDK", String.format("\n\n----------------------%s调用堆栈结束------------------------\n\n", tips));
     }
 
-    public synchronized static String getString(ContentResolver resolver, String name) {
-        printStackTrace("敏感函数 getString：" + name+" "+methodCallNum.addAndGet(1));
-        return Settings.System.getString(resolver, name);
-    }
 }
