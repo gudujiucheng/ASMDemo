@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/holo_green_dark"
+    android:padding="20dp"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/bt_float_print"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="打印记录"/>
+
+    <Button
+        android:id="@+id/bt_float_clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="清空记录"/>
+
+</LinearLayout>

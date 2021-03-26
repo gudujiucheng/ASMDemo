@@ -73,7 +73,7 @@ public final class SlowMethodRecordClassAdapter extends ClassVisitor {
                 @Override
                 public void visitCode() {
                     super.visitCode();
-                    //调用
+                    //调用获取时间戳，并存储到局部变量表（LSTORE）
                     mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
                     startVarIndex = newLocal(Type.LONG_TYPE);
                     mv.visitVarInsn(LSTORE, startVarIndex);
@@ -81,6 +81,7 @@ public final class SlowMethodRecordClassAdapter extends ClassVisitor {
 
                 @Override
                 public void visitInsn(int opcode) {
+                    //遇到返回或者异常抛出指令则插入耗时统计代码。
                     if ((opcode >= IRETURN && opcode <= RETURN) || opcode == ATHROW) {
                         mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
                         mv.visitVarInsn(LLOAD, startVarIndex);

@@ -9,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-
-import androidx.annotation.DrawableRes;
 import androidx.annotation.LayoutRes;
 import androidx.core.view.ViewCompat;
 
@@ -34,10 +32,8 @@ public class FloatingView implements IFloatingView {
     private WeakReference<FrameLayout> mContainer;
     @LayoutRes
     private int mLayoutId = R.layout.en_floating_view;
-    @DrawableRes
-    private int mIconRes = R.drawable.imuxuan;
     private ViewGroup.LayoutParams mLayoutParams = getParams();
-
+    private MagnetViewListener mMagnetViewListener;
     private FloatingView() {
     }
 
@@ -74,10 +70,11 @@ public class FloatingView implements IFloatingView {
             if (mEnFloatingView != null) {
                 return;
             }
+
             EnFloatingView enFloatingView = new EnFloatingView(EnContext.get(), mLayoutId);
             mEnFloatingView = enFloatingView;
+            mEnFloatingView.setMagnetViewListener(mMagnetViewListener);
             enFloatingView.setLayoutParams(mLayoutParams);
-            enFloatingView.setIconImage(mIconRes);
             addViewToWindow(enFloatingView);
         }
     }
@@ -134,14 +131,9 @@ public class FloatingView implements IFloatingView {
     }
 
     @Override
-    public FloatingView icon(@DrawableRes int resId) {
-        mIconRes = resId;
-        return this;
-    }
-
-    @Override
-    public FloatingView customView(FloatingMagnetView viewGroup) {
-        mEnFloatingView = viewGroup;
+    public FloatingView customView(View view) {
+        mEnFloatingView = new EnFloatingView(EnContext.get(), view);
+        mEnFloatingView.setLayoutParams(mLayoutParams);
         return this;
     }
 
@@ -162,9 +154,7 @@ public class FloatingView implements IFloatingView {
 
     @Override
     public FloatingView listener(MagnetViewListener magnetViewListener) {
-        if (mEnFloatingView != null) {
-            mEnFloatingView.setMagnetViewListener(magnetViewListener);
-        }
+        mMagnetViewListener = magnetViewListener;
         return this;
     }
 
@@ -182,6 +172,10 @@ public class FloatingView implements IFloatingView {
         return mContainer.get();
     }
 
+    /**
+     * 设置大小模式，以及初始位置
+     * @return
+     */
     private FrameLayout.LayoutParams getParams() {
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,

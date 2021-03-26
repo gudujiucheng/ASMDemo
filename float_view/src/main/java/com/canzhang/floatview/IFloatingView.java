@@ -1,6 +1,7 @@
 package com.canzhang.floatview;
 
 import android.app.Activity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -27,9 +28,7 @@ public interface IFloatingView {
 
     FloatingMagnetView getView();
 
-    FloatingView icon(@DrawableRes int resId);
-
-    FloatingView customView(FloatingMagnetView viewGroup);
+    FloatingView customView(View view);
 
     FloatingView customView(@LayoutRes int resource);
 
