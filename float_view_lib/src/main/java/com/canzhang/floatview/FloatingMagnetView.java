@@ -9,13 +9,8 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.canzhang.floatview.utils.SystemUtils;
 
 
-/**
- * @ClassName FloatingMagnetView
- * @Description 磁力吸附悬浮窗
- */
 public class FloatingMagnetView extends FrameLayout {
 
     public static final int MARGIN_EDGE = 13;
@@ -29,7 +24,6 @@ public class FloatingMagnetView extends FrameLayout {
     protected MoveAnimator mMoveAnimator;
     protected int mScreenWidth;
     private int mScreenHeight;
-    private int mStatusBarHeight;
     private boolean isNearestLeft = true;
     private float mPortraitY;
 
@@ -52,9 +46,7 @@ public class FloatingMagnetView extends FrameLayout {
 
     private void init() {
         mMoveAnimator = new MoveAnimator();
-        mStatusBarHeight = SystemUtils.getStatusBarHeight(getContext());
         setClickable(true);
-//        updateSize();
     }
 
     @Override
@@ -96,9 +88,6 @@ public class FloatingMagnetView extends FrameLayout {
         setX(mOriginalX + event.getRawX() - mOriginalRawX);
         // 限制不可超出屏幕高度
         float desY = mOriginalY + event.getRawY() - mOriginalRawY;
-        if (desY < mStatusBarHeight) {
-            desY = mStatusBarHeight;
-        }
         if (desY > mScreenHeight - getHeight()) {
             desY = mScreenHeight - getHeight();
         }
@@ -119,8 +108,6 @@ public class FloatingMagnetView extends FrameLayout {
             mScreenWidth = viewGroup.getWidth() - getWidth();
             mScreenHeight = viewGroup.getHeight();
         }
-//        mScreenWidth = (SystemUtils.getScreenWidth(getContext()) - this.getWidth());
-//        mScreenHeight = SystemUtils.getScreenHeight(getContext());
     }
 
     public void moveToEdge() {

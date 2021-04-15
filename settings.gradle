@@ -1,4 +1,4 @@
-include ':float_view'
+include ':float_view_lib'
 include ':slow_method_plugin'
 include ':slow_method_lib'
 include ':method_call_record_lib'
