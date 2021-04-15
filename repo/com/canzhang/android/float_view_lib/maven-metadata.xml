@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata>
   <groupId>com.canzhang.android</groupId>
-  <artifactId>slow_method_lib</artifactId>
+  <artifactId>float_view_lib</artifactId>
   <versioning>
     <versions>
       <version>1.0.0-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20210415123434</lastUpdated>
+    <lastUpdated>20210415124728</lastUpdated>
   </versioning>
 </metadata>

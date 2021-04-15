@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <metadata modelVersion="1.1.0">
   <groupId>com.canzhang.android</groupId>
-  <artifactId>slow_method_lib</artifactId>
+  <artifactId>float_view_lib</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <versioning>
     <snapshot>
-      <timestamp>20210415.123434</timestamp>
+      <timestamp>20210415.124728</timestamp>
       <buildNumber>1</buildNumber>
     </snapshot>
-    <lastUpdated>20210415123434</lastUpdated>
+    <lastUpdated>20210415124728</lastUpdated>
     <snapshotVersions>
       <snapshotVersion>
         <extension>aar</extension>
-        <value>1.0.0-20210415.123434-1</value>
-        <updated>20210415123434</updated>
+        <value>1.0.0-20210415.124728-1</value>
+        <updated>20210415124728</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>pom</extension>
-        <value>1.0.0-20210415.123434-1</value>
-        <updated>20210415123434</updated>
+        <value>1.0.0-20210415.124728-1</value>
+        <updated>20210415124728</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>
