@@ -3,9 +3,11 @@
   <groupId>com.canzhang.android</groupId>
   <artifactId>method_call_record_lib</artifactId>
   <versioning>
+    <release>1.0.0</release>
     <versions>
       <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0</version>
     </versions>
-    <lastUpdated>20210415124941</lastUpdated>
+    <lastUpdated>20210527024332</lastUpdated>
   </versioning>
 </metadata>
