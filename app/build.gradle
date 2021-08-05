@@ -9,7 +9,11 @@ apply plugin: 'com.android.application'
 //}
 
 //apply plugin: 'com.canzhang.thread_plugin'
-//apply plugin: 'com.canzhang.method_call_record_plugin'
+apply plugin: 'com.canzhang.method_call_record_plugin'
+methodCallRecordExtension{//注意用.拼接，并是class结尾
+    methodMap = ["android/telephony/TelephonyManager":"getLine1Number()Ljava/lang/String;"]
+    methodTest = ["onClick"]
+}
 apply plugin: 'com.canzhang.slow_method_plugin'
 
 android {

@@ -82,11 +82,12 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
              */
             @Override
             public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-                if ("getInstalledApplications".equals(name)) {
+                super.visitMethodInsn();
+                if ("onClick".equals(name)) {
                     LogUtils.log("--------------->>>>>\n\nopcode(操作码):" + opcode + "\n\nowner(归属类):" + owner + "\n\nname（方法名）:" + name + "\n\ndescriptor（方法描述符）:" + descriptor + "\n\nisInterface（是否接口）:" + isInterface + "\n\noutMethodName（上层类名_方法名）:" + className + "_" + outName);
                 }
 //                ApplicationPackageManager
-                if (opcode == Opcodes.INVOKEVIRTUAL) {//调用实例方法
+
                     //归属类、方法名、方法描述（返回值、入参类型）
                     String recordMethodName = null;
                     if ("android/telephony/TelephonyManager".equals(owner) && name.equals("getLine1Number") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
@@ -95,6 +96,13 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
 
                     if ("android/telephony/TelephonyManager".equals(owner) && name.equals("getDeviceId") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
                         recordMethodName = "getDeviceId";
+                    }
+
+
+
+                    if ("android/view/View$OnClickListener".equals(owner) && name.equals("onClick") && descriptor.equalsIgnoreCase("(Landroid/view/View;)V")) {
+                        LogUtils.log("-----进来了 嘻嘻嘻嘻嘻嘻嘻嘻寻寻  哈哈哈哈哈哈  xxxxxxxxx--------");
+                        recordMethodName = "onClick";
                     }
 
                     if ("android/telephony/TelephonyManager".equals(owner) && name.equals("getSimSerialNumber") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
@@ -155,8 +163,6 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                         mv.visitMethodInsn(INVOKESTATIC, sdkClassPath, "recordMethodCall", "(Ljava/lang/String;)V", false);
                     }
 
-
-                }
                 if (opcode == Opcodes.INVOKESTATIC) {//调用静态方法
 
                     if (!isSdkPath() && ("android/provider/Settings$System".equals(owner) || "android/provider/Settings$Secure".equals(owner)) && name.equals("getString") && descriptor.equalsIgnoreCase("(Landroid/content/ContentResolver;Ljava/lang/String;)Ljava/lang/String;")) {
