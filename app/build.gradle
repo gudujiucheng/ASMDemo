@@ -13,7 +13,7 @@ apply plugin: 'com.canzhang.method_call_record_plugin'
 methodCallRecordExtension {
 //    //日志打印测试，不知道方法描述怎么写可以在这里填写下方法名，build一下即可看到日志（模糊匹配）
     methodTest = ["onClick"]
-    //模糊匹配，只关注方法名 和入参、返回参数
+    //模糊匹配，只关注方法名 和入参、返回参数（模糊匹配不传入方法描述，则只匹配方法名）
     fuzzyMethodMap = ["onClick": ["(Landroid/view/View;)V"]]
     //精准匹配，关注方法名、入参、返回参数、类名
     accurateMethodMap = ["android/telephony/TelephonyManager": ["getLine1Number()Ljava/lang/String;",

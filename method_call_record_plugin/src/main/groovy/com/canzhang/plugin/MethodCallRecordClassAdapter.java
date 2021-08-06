@@ -81,19 +81,22 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                 //模糊匹配方法（忽略方法归属的类名）
                 if (MethodCallRecordExtension.fuzzyMethodMap != null
                         && MethodCallRecordExtension.fuzzyMethodMap.containsKey(outName)
-                        && MethodCallRecordExtension.fuzzyMethodMap.get(outName)!=null
-                        && MethodCallRecordExtension.fuzzyMethodMap.get(outName).size()>0) {
+                        && MethodCallRecordExtension.fuzzyMethodMap.get(outName)!=null) {
 
-                    for (String item: MethodCallRecordExtension.fuzzyMethodMap.get(outName)) {
-                        if(item!=null&&item.equals(desc)){
-                            //命中，则插桩
-                            inputMethod(outName);
-                            break;
+                    if(MethodCallRecordExtension.fuzzyMethodMap.get(outName).size()>0){//有配置，就按照配置来匹配
+                        for (String item: MethodCallRecordExtension.fuzzyMethodMap.get(outName)) {
+                            if(item!=null&&item.equals(desc)){
+                                //命中，则插桩
+                                inputMethod(outName);
+                                break;
+                            }
+
                         }
-
+                    }else{//没有配置就通配
+                        //命中，则插桩
+                        inputMethod(outName);
                     }
-                    //命中，则插桩
-                    inputMethod(outName);
+
                 }
             }
 
