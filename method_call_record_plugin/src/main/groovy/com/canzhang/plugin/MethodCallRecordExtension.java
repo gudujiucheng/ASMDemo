@@ -20,9 +20,9 @@ public class MethodCallRecordExtension {
      * 模糊匹配：只关注方法名和方法描述，方法归属的类不做判断
      *
      * @ key :方法名 如：getLine1Number
-     * @ value :方法描述  如：()Ljava/lang/String;
+     * @ list item value :方法描述  如：()Ljava/lang/String;
      */
-    public static Map<String, String> fuzzyMethodMap = new HashMap<>();
+    public static Map<String,  List<String>> fuzzyMethodMap = new HashMap<>();
 
     /**
      * 不知类的路径，和方法描述怎么写，可以在这里添加方法名，然后build一下会自动打印出来

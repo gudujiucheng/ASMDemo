@@ -79,7 +79,19 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                     LogUtils.log("----------测试打印数据----->>>>>\n\naccess（方法修饰符）:" + access + "\n\noutName（方法名）:" + outName + "\n\ndesc（方法描述（就是（参数列表）返回值类型拼接））:" + desc + "\n\nsignature（方法泛型信息：）:" + signature + "\n\nclassName（当前扫描的类名）:" + className);
                 }
                 //模糊匹配方法（忽略方法归属的类名）
-                if (MethodCallRecordExtension.fuzzyMethodMap != null && MethodCallRecordExtension.fuzzyMethodMap.containsKey(outName) && desc.equals(MethodCallRecordExtension.fuzzyMethodMap.get(outName))) {
+                if (MethodCallRecordExtension.fuzzyMethodMap != null
+                        && MethodCallRecordExtension.fuzzyMethodMap.containsKey(outName)
+                        && MethodCallRecordExtension.fuzzyMethodMap.get(outName)!=null
+                        && MethodCallRecordExtension.fuzzyMethodMap.get(outName).size()>0) {
+
+                    for (String item: MethodCallRecordExtension.fuzzyMethodMap.get(outName)) {
+                        if(item!=null&&item.equals(desc)){
+                            //命中，则插桩
+                            inputMethod(outName);
+                            break;
+                        }
+
+                    }
                     //命中，则插桩
                     inputMethod(outName);
                 }
