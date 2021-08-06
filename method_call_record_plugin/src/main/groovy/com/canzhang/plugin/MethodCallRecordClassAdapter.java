@@ -59,7 +59,6 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
             public void visitFieldInsn(int opcode, String owner, String name, String desc) {
 //                if("com/canzhang/asmdemo/sdk/MyTest".equals(className)){
 //                    LogUtils.log("--------------->>>>>\n\nopcode(操作码):" + opcode + "\n\nowner:" + owner + "\n\nname（:" + name + "\n\ndesc:" + desc + "\n\noutMethodName（上层类名_方法名）:" +className+"_"+ outName);
-//
 //                }
                 if (opcode == Opcodes.GETSTATIC && "android/os/Build".equals(owner)) {
                     //加载一个常量
@@ -72,8 +71,22 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
 
             }
 
+            @Override
+            protected void onMethodEnter() {
+                super.onMethodEnter();
+                //打印方法信息
+                if (MethodCallRecordExtension.methodTest != null && MethodCallRecordExtension.methodTest.contains(outName)) {
+                    LogUtils.log("----------测试打印数据----->>>>>\n\naccess（方法修饰符）:" + access + "\n\noutName（方法名）:" + outName + "\n\ndesc（方法描述（就是（参数列表）返回值类型拼接））:" + desc + "\n\nsignature（方法泛型信息：）:" + signature + "\n\nclassName（当前扫描的类名）:" + className);
+                }
+                //模糊匹配方法（忽略方法归属的类名）
+                if (MethodCallRecordExtension.fuzzyMethodMap != null && MethodCallRecordExtension.fuzzyMethodMap.containsKey(outName) && desc.equals(MethodCallRecordExtension.fuzzyMethodMap.get(outName))) {
+                    //命中，则插桩
+                    inputMethod(outName);
+                }
+            }
+
             /**
-             * 访问调用方法的指令（这里仅针对调用方法的指令，其他指令还有返回指令，异常抛出指令一类的）
+             * 访问调用方法的指令（这里仅针对调用方法的指令，其他指令还有返回指令，异常抛出指令一类的） 像接口回调这一类的是调用不到的（因为回调的点是系统api，这里捕获不到）
              * @param opcode 指令
              * @param owner  指令所调用的方法归属的类
              * @param name   方法名
@@ -82,86 +95,20 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
              */
             @Override
             public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
-                super.visitMethodInsn();
-                if ("onClick".equals(name)) {
-                    LogUtils.log("--------------->>>>>\n\nopcode(操作码):" + opcode + "\n\nowner(归属类):" + owner + "\n\nname（方法名）:" + name + "\n\ndescriptor（方法描述符）:" + descriptor + "\n\nisInterface（是否接口）:" + isInterface + "\n\noutMethodName（上层类名_方法名）:" + className + "_" + outName);
+
+                if (MethodCallRecordExtension.accurateMethodMap != null
+                        && MethodCallRecordExtension.accurateMethodMap.containsKey(name)
+                        && MethodCallRecordExtension.accurateMethodMap.get(name) != null
+                        && MethodCallRecordExtension.accurateMethodMap.get(name).size() > 0) {
+                    for (String item: MethodCallRecordExtension.accurateMethodMap.get(name)) {
+                        if(item!=null&&item.equals(name+descriptor)){
+                            //命中，则插桩
+                            inputMethod(name);
+                            break;
+                        }
+
+                    }
                 }
-//                ApplicationPackageManager
-
-                    //归属类、方法名、方法描述（返回值、入参类型）
-                    String recordMethodName = null;
-                    if ("android/telephony/TelephonyManager".equals(owner) && name.equals("getLine1Number") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
-                        recordMethodName = "getLine1Number";
-                    }
-
-                    if ("android/telephony/TelephonyManager".equals(owner) && name.equals("getDeviceId") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
-                        recordMethodName = "getDeviceId";
-                    }
-
-
-
-                    if ("android/view/View$OnClickListener".equals(owner) && name.equals("onClick") && descriptor.equalsIgnoreCase("(Landroid/view/View;)V")) {
-                        LogUtils.log("-----进来了 嘻嘻嘻嘻嘻嘻嘻嘻寻寻  哈哈哈哈哈哈  xxxxxxxxx--------");
-                        recordMethodName = "onClick";
-                    }
-
-                    if ("android/telephony/TelephonyManager".equals(owner) && name.equals("getSimSerialNumber") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
-                        recordMethodName = "getSimSerialNumber";
-                    }
-
-                    if ("android/telephony/TelephonyManager".equals(owner) && name.equals("getSubscriberId") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
-                        recordMethodName = "getSubscriberId";
-                    }
-
-
-                    if ("android/net/wifi/WifiInfo".equals(owner) && name.equals("getMacAddress") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
-                        recordMethodName = "getMacAddress";
-                    }
-                    if ("android/net/wifi/WifiInfo".equals(owner) && name.equals("getSSID") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
-                        recordMethodName = "getSSID";
-                    }
-                    //阀门把这个api 认为是获取用户mac地址  IP地址
-                    if ("java/net/NetworkInterface".equals(owner) && name.equals("getInetAddresses") && descriptor.equalsIgnoreCase("()Ljava/util/Enumeration;")) {
-                        recordMethodName = "getInetAddresses";
-                    }
-
-                    if ("java/net/InetAddress".equals(owner) && name.equals("getHostAddress") && descriptor.equalsIgnoreCase("()Ljava/lang/String;")) {
-                        recordMethodName = "getHostAddress";
-                    }
-
-                    //阀门把下面的api 都认为是获取已安装应用列表（
-                    // 1.queryIntentActivities
-                    //2.getInstalledPackages
-                    //3.getInstalledApplications
-                    //4.getRunningServices
-                    //5.getRunningAppProcesses
-                    //6.pm pm list package （这个是命令行 暂未添加监控））
-                    if ("android/content/pm/PackageManager".equals(owner) && name.equals("getInstalledPackages") && descriptor.equalsIgnoreCase("(I)Ljava/util/List;")) {
-                        recordMethodName = "getInstalledPackages";
-                    }
-
-                    if ("android/content/pm/PackageManager".equals(owner) && name.equals("getInstalledApplications") && descriptor.equalsIgnoreCase("(I)Ljava/util/List;")) {
-                        recordMethodName = "getInstalledApplications";
-                    }
-
-                    if ("android/app/ActivityManager".equals(owner) && name.equals("getRunningServices") && descriptor.equalsIgnoreCase("(I)Ljava/util/List;")) {
-                        recordMethodName = "getRunningServices";
-                    }
-                    if ("android/app/ActivityManager".equals(owner) && name.equals("getRunningAppProcesses") && descriptor.equalsIgnoreCase("()Ljava/util/List;")) {
-                        recordMethodName = "getRunningAppProcesses";
-                    }
-
-                    if ("android/content/pm/PackageManager".equals(owner) && name.equals("queryIntentActivities") && descriptor.equalsIgnoreCase("(Landroid/content/Intent;I)Ljava/util/List;")) {
-                        recordMethodName = "queryIntentActivities";
-                    }
-
-
-                    if (recordMethodName != null) {
-                        //加载一个常量
-                        mv.visitLdcInsn(className + "_" + outName + "_call:" + recordMethodName);
-                        //调用我们自定义的方法 (注意用/,不是.; 方法描述记得；也要)
-                        mv.visitMethodInsn(INVOKESTATIC, sdkClassPath, "recordMethodCall", "(Ljava/lang/String;)V", false);
-                    }
 
                 if (opcode == Opcodes.INVOKESTATIC) {//调用静态方法
 
@@ -170,10 +117,18 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                         super.visitMethodInsn(opcode, sdkClassPath, name, descriptor, isInterface);
                         return;
                     }
-
-
                 }
                 super.visitMethodInsn(opcode, owner, name, descriptor, isInterface);
+            }
+
+            private void inputMethod(String recordMethodName) {
+                if (!isSdkPath() && recordMethodName != null) {
+                    LogUtils.log("----------命中----->>>"+className + "_" + outName + "_call:" + recordMethodName);
+                    //加载一个常量
+                    mv.visitLdcInsn(className + "_" + outName + "_call:" + recordMethodName);
+                    //调用我们自定义的方法 (注意用/,不是.; 方法描述记得；也要)
+                    mv.visitMethodInsn(INVOKESTATIC, sdkClassPath, "recordMethodCall", "(Ljava/lang/String;)V", false);
+                }
             }
         };
         return mv;

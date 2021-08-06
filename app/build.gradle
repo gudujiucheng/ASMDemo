@@ -10,10 +10,23 @@ apply plugin: 'com.android.application'
 
 //apply plugin: 'com.canzhang.thread_plugin'
 apply plugin: 'com.canzhang.method_call_record_plugin'
-methodCallRecordExtension{//注意用.拼接，并是class结尾
-    methodMap = ["android/telephony/TelephonyManager":"getLine1Number()Ljava/lang/String;"]
-    methodTest = ["onClick"]
-}
+//methodCallRecordExtension {
+////    //日志打印测试，不知道方法描述怎么写可以在这里填写下方法名，build一下即可看到日志（模糊匹配）
+//    methodTest = ["onClick"]
+//    //模糊匹配，只关注方法名 和入参、返回参数
+//    fuzzyMethodMap = ["onClick": "(Landroid/view/View;)V"]
+//    //精准匹配，关注方法名、入参、返回参数、类名
+//    accurateMethodMap = ["android/telephony/TelephonyManager": ["getLine1Number()Ljava/lang/String;",
+//                                                             "getDeviceId()Ljava/lang/String;",
+//                                                             "getSimSerialNumber()Ljava/lang/String;",
+//                                                             "getSubscriberId()Ljava/lang/String;"],
+//                      "android/net/wifi/WifiInfo"         : ["getMacAddress()Ljava/lang/String;",
+//                                                             "getSSID()Ljava/lang/String;"],
+//                      "java/net/NetworkInterface"         : ["getInetAddresses()Ljava/util/Enumeration;"],
+//                      "java/net/InetAddress"              : ["getHostAddress()Ljava/lang/String;"]
+//    ]
+//
+//}
 apply plugin: 'com.canzhang.slow_method_plugin'
 
 android {
