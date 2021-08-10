@@ -12,10 +12,24 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.canzhang.method_call_record_plugin'
 methodCallRecordExtension {
 //    //日志打印测试，不知道方法描述怎么写可以在这里填写下方法名，build一下即可看到日志（模糊匹配）
-    methodTest = ["onClick"]
+    methodTest = ["onTabSelected"]
     //模糊匹配，只关注方法名 和入参、返回参数（模糊匹配不传入方法描述，则只匹配方法名）
-    fuzzyMethodMap = ["onClick": ["(Landroid/view/View;)V"]]
-    //精准匹配，关注方法名、入参、返回参数、类名
+    //模糊匹配，只关注方法名、入参、返回参数（可传入空集合[]，传入空集合的时候默认仅匹配方法名）
+    fuzzyMethodMap = ["onClick": ["(Landroid/view/View;)V","(Landroid/content/DialogInterface;I)V","(Landroid/content/DialogInterface;IZ)V"],
+                      "onMenuItemClick": ["(Landroid/view/MenuItem;)Z"],
+                      "onCheckedChanged": ["(Landroid/widget/RadioGroup;I)V","(Landroid/widget/CompoundButton;Z)V"],
+                      "onChildClick": ["(Landroid/widget/ExpandableListView;Landroid/view/View;IIJ)Z"],
+                      "onItemSelected": ["(Landroid/widget/AdapterView;Landroid/view/View;IJ)V"],
+                      "onListItemClick": ["(Landroid/widget/ListView;Landroid/view/View;IJ)V"],
+                      "onStopTrackingTouch": ["(Landroid/widget/SeekBar;)V"],
+                      "onRatingChanged": ["(Landroid/widget/RatingBar;FZ)V"],
+                      "onTabChanged": ["(Ljava/lang/String;)V"],
+                      "onNavigationItemSelected": ["(Landroid/view/MenuItem;)Z"],
+                      "onTabSelected": ["(Landroid/support/design/widget/TabLayout\$Tab;)V","(Lcom/google/android/material/tabs/TabLayout\$Tab;)V"],
+                      "onGroupClick": ["(Landroid/widget/ExpandableListView;Landroid/view/View;IJ)Z"],
+                      "onItemClick": ["(Landroid/widget/AdapterView;Landroid/view/View;IJ)V"]
+    ]
+    //精准匹配，关注方法名、入参、返回参数、类名(仅适配非系统api调用的场景)
     accurateMethodMap = ["android/telephony/TelephonyManager": ["getLine1Number()Ljava/lang/String;",
                                                              "getDeviceId()Ljava/lang/String;",
                                                              "getSimSerialNumber()Ljava/lang/String;",
@@ -51,6 +65,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'com.google.android.material:material:1.4.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
