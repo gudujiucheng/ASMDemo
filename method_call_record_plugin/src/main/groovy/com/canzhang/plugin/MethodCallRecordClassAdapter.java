@@ -60,12 +60,12 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
 //                if("com/canzhang/asmdemo/sdk/MyTest".equals(className)){
 //                    LogUtils.log("--------------->>>>>\n\nopcode(操作码):" + opcode + "\n\nowner:" + owner + "\n\nname（:" + name + "\n\ndesc:" + desc + "\n\noutMethodName（上层类名_方法名）:" +className+"_"+ outName);
 //                }
-                if (opcode == Opcodes.GETSTATIC && "android/os/Build".equals(owner)) {
-                    //加载一个常量
-                    mv.visitLdcInsn(className + "_" + outName + "_load: fieldName:" + name + " fieldDesc:" + desc + " fieldOwner:" + owner);
-                    //调用我们自定义的方法 (注意用/,不是.; 方法描述记得；也要)
-                    mv.visitMethodInsn(INVOKESTATIC, sdkClassPath, "recordLoadFiled", "(Ljava/lang/String;)V", false);
-                }
+//                if (opcode == Opcodes.GETSTATIC && "android/os/Build".equals(owner)) {
+//                    //加载一个常量
+//                    mv.visitLdcInsn(className + "_" + outName + "_load: fieldName:" + name + " fieldDesc:" + desc + " fieldOwner:" + owner);
+//                    //调用我们自定义的方法 (注意用/,不是.; 方法描述记得；也要)
+//                    mv.visitMethodInsn(INVOKESTATIC, sdkClassPath, "recordLoadFiled", "(Ljava/lang/String;)V", false);
+//                }
                 super.visitFieldInsn(opcode, owner, name, desc);
 
 
@@ -112,10 +112,10 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
             public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
 
                 if (MethodCallRecordExtension.accurateMethodMap != null
-                        && MethodCallRecordExtension.accurateMethodMap.containsKey(name)
-                        && MethodCallRecordExtension.accurateMethodMap.get(name) != null
-                        && MethodCallRecordExtension.accurateMethodMap.get(name).size() > 0) {
-                    for (String item: MethodCallRecordExtension.accurateMethodMap.get(name)) {
+                        && MethodCallRecordExtension.accurateMethodMap.containsKey(owner)
+                        && MethodCallRecordExtension.accurateMethodMap.get(owner) != null
+                        && MethodCallRecordExtension.accurateMethodMap.get(owner).size() > 0) {
+                    for (String item: MethodCallRecordExtension.accurateMethodMap.get(owner)) {
                         if(item!=null&&item.equals(name+descriptor)){
                             //命中，则插桩
                             inputMethod(name);
