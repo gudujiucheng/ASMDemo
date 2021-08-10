@@ -138,7 +138,7 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
 
             private void inputMethod(String recordMethodName) {
                 if (!isSdkPath() && recordMethodName != null) {
-                    LogUtils.log("----------命中----->>>"+className + "_" + outName + "_call:" + recordMethodName);
+//                    LogUtils.log("----------命中----->>>"+className + "_" + outName + "_call:" + recordMethodName);
                     //加载一个常量
                     mv.visitLdcInsn(className + "_" + outName + "_call:" + recordMethodName);
                     //调用我们自定义的方法 (注意用/,不是.; 方法描述记得；也要)
