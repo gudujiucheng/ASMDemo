@@ -76,7 +76,7 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                 super.onMethodEnter();
                 //打印方法信息
                 if (MethodCallRecordExtension.methodTest != null && MethodCallRecordExtension.methodTest.contains(outName)) {
-                    LogUtils.log("----------测试打印数据---form onMethodEnter -->>>>>"
+                    LogUtils.log("----------测试打印数据---form 方法进入 -->>>>>"
                             + "\n\naccess（方法修饰符）:" + access
                             + "\n\noutName（方法名）:" + outName
                             + "\n\ndesc（方法描述（就是（参数列表）返回值类型拼接））:" + desc
@@ -116,8 +116,8 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
             @Override
             public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
                 //打印方法信息
-                if (MethodCallRecordExtension.methodTest != null && MethodCallRecordExtension.methodTest.contains(outName)) {
-                    LogUtils.log("----------测试打印数据---form visitMethodInsn（与onMethodEnter 可能存在重复打印） -->>>>>"
+                if (MethodCallRecordExtension.methodTest != null && MethodCallRecordExtension.methodTest.contains(name)) {
+                    LogUtils.log("----------测试打印数据---方法调用（与onMethodEnter 可能存在重复打印） -->>>>>"
                             + "\n\nopcode（方法调用指令）:" + opcode
                             + "\n\nowner（方法归属类）:" + owner
                             + "\n\naccess（方法修饰符）:" + access
