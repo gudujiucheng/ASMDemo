@@ -76,7 +76,12 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                 super.onMethodEnter();
                 //打印方法信息
                 if (MethodCallRecordExtension.methodTest != null && MethodCallRecordExtension.methodTest.contains(outName)) {
-                    LogUtils.log("----------测试打印数据----->>>>>\n\naccess（方法修饰符）:" + access + "\n\noutName（方法名）:" + outName + "\n\ndesc（方法描述（就是（参数列表）返回值类型拼接））:" + desc + "\n\nsignature（方法泛型信息：）:" + signature + "\n\nclassName（当前扫描的类名）:" + className);
+                    LogUtils.log("----------测试打印数据---form onMethodEnter -->>>>>"
+                            + "\n\naccess（方法修饰符）:" + access
+                            + "\n\noutName（方法名）:" + outName
+                            + "\n\ndesc（方法描述（就是（参数列表）返回值类型拼接））:" + desc
+                            + "\n\nsignature（方法泛型信息：）:" + signature
+                            + "\n\nclassName（当前扫描的类名）:" + className);
                 }
                 //模糊匹配方法（忽略方法归属的类名）
                 if (MethodCallRecordExtension.fuzzyMethodMap != null
@@ -110,6 +115,18 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
              */
             @Override
             public void visitMethodInsn(int opcode, String owner, String name, String descriptor, boolean isInterface) {
+                //打印方法信息
+                if (MethodCallRecordExtension.methodTest != null && MethodCallRecordExtension.methodTest.contains(outName)) {
+                    LogUtils.log("----------测试打印数据---form visitMethodInsn（与onMethodEnter 可能存在重复打印） -->>>>>"
+                            + "\n\nopcode（方法调用指令）:" + opcode
+                            + "\n\nowner（方法归属类）:" + owner
+                            + "\n\naccess（方法修饰符）:" + access
+                            + "\n\nname（方法名）:" + name
+                            + "\n\nisInterface（是否接口方法）:" + isInterface
+                            + "\n\ndescriptor（方法描述（就是（参数列表）返回值类型拼接））:" + descriptor
+                            + "\n\nsignature（方法泛型信息：）:" + signature
+                            + "\n\nclassName（当前扫描的类名）:" + className);
+                }
 
                 if (MethodCallRecordExtension.accurateMethodMap != null
                         && MethodCallRecordExtension.accurateMethodMap.containsKey(owner)

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.canzhang.android</groupId>
+  <artifactId>method_call_plugin</artifactId>
+  <version>1.0.6-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20210816.120036</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20210816120036</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>1.0.6-20210816.120036-1</value>
+        <updated>20210816120036</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>1.0.6-20210816.120036-1</value>
+        <updated>20210816120036</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>
