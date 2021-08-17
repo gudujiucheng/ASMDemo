@@ -58,6 +58,7 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
         MethodVisitor mv = super.visitMethod(access, outName, desc, signature, exceptions);
         final AtomicBoolean isInvokeLoadLibrary = new AtomicBoolean(false);
         List<String> mLdcList = new ArrayList<>();
+        final String[] methodName = {"-1"};
         mv = new AdviceAdapter(ASM6, mv, access, outName, desc) {
 
             @Override
@@ -123,7 +124,7 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                 super.onMethodExit(opcode);
                 if(isInvokeLoadLibrary.get() &&mLdcList.size()>0){
                     StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append("\n\n发现方法调用 loadLibrary  className（当前扫描的类名）:" + className);
+                    stringBuilder.append("\n\n发现方法调用 "+ methodName[0]+"（当前扫描的类名）:" + className);
                     stringBuilder.append("\n------方法体加载的常量 开始--------\n");
                     for (String item :mLdcList) {
                         stringBuilder.append(item).append("\n");
@@ -162,6 +163,7 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                 }
                 if("java/lang/System".equals(owner)&&("loadLibrary".equals(name)||"load".equals(name))&&"(Ljava/lang/String;)V".equals(descriptor)){
                     isInvokeLoadLibrary.set(true);
+                    methodName[0] = name;
                 }
 
                 if (MethodCallRecordExtension.accurateMethodMap != null

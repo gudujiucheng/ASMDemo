@@ -32,6 +32,6 @@ uploadArchives {
         pom.artifactId = 'method_call_plugin'
 
         //插件版本号
-        pom.version = '1.0.9-SNAPSHOT'
+        pom.version = '1.0.10-SNAPSHOT'
     }
 }
