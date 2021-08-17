@@ -5,6 +5,10 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.commons.AdviceAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static org.objectweb.asm.Opcodes.ASM6;
 
 /**
@@ -52,8 +56,17 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
     public MethodVisitor visitMethod(final int access, final String outName,
                                      final String desc, final String signature, final String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, outName, desc, signature, exceptions);
+        final AtomicBoolean isInvokeLoadLibrary = new AtomicBoolean(false);
+        List<String> mLdcList = new ArrayList<>();
         mv = new AdviceAdapter(ASM6, mv, access, outName, desc) {
 
+            @Override
+            public void visitLdcInsn(Object cst) {//访问一些常量
+                if(cst instanceof  String){
+                    mLdcList.add((String) cst);
+                }
+                super.visitLdcInsn(cst);
+            }
 
             @Override
             public void visitFieldInsn(int opcode, String owner, String name, String desc) {
@@ -105,6 +118,26 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                 }
             }
 
+            @Override
+            protected void onMethodExit(int opcode) {
+                super.onMethodExit(opcode);
+                if(isInvokeLoadLibrary.get() &&mLdcList.size()>0){
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append("\n\n发现方法调用 loadLibrary  className（当前扫描的类名）:" + className);
+                    stringBuilder.append("\n------方法体加载的常量 开始--------\n");
+                    for (String item :mLdcList) {
+                        stringBuilder.append(item).append("\n");
+                    }
+                    stringBuilder.append("------方法体加载的常量 结束--------");
+                    LogUtils.log(stringBuilder
+                            + "\naccess（方法修饰符）:" + access
+                            + "\noutName（方法名）:" + outName
+                            + "\ndesc（方法描述（就是（参数列表）返回值类型拼接））:" + desc
+                            + "\nsignature（方法泛型信息：）:" + signature
+                            + "\nclassName（当前扫描的类名）:" + className+"\n\n");
+                }
+            }
+
             /**
              * 访问调用方法的指令（这里仅针对调用方法的指令，其他指令还有返回指令，异常抛出指令一类的） 像接口回调这一类的是调用不到的（因为回调的点是系统api，这里捕获不到）
              * @param opcode 指令
@@ -126,6 +159,9 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                             + "\n\ndescriptor（方法描述（就是（参数列表）返回值类型拼接））:" + descriptor
                             + "\n\nsignature（方法泛型信息：）:" + signature
                             + "\n\nclassName（当前扫描的类名）:" + className);
+                }
+                if("java/lang/System".equals(owner)&&"loadLibrary".equals(name)&&"(Ljava/lang/String;)V".equals(descriptor)){
+                    isInvokeLoadLibrary.set(true);
                 }
 
                 if (MethodCallRecordExtension.accurateMethodMap != null
