@@ -160,7 +160,7 @@ public final class MethodCallRecordClassAdapter extends ClassVisitor {
                             + "\n\nsignature（方法泛型信息：）:" + signature
                             + "\n\nclassName（当前扫描的类名）:" + className);
                 }
-                if("java/lang/System".equals(owner)&&"loadLibrary".equals(name)&&"(Ljava/lang/String;)V".equals(descriptor)){
+                if("java/lang/System".equals(owner)&&("loadLibrary".equals(name)||"load".equals(name))&&"(Ljava/lang/String;)V".equals(descriptor)){
                     isInvokeLoadLibrary.set(true);
                 }
 
